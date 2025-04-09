@@ -3,6 +3,6 @@ namespace galaxy_match_make.Models;
 public class PlanetDto
 {
     public int Id { get; }
-    public string Code { get; set; } = null!;
+    public string Planet_Name { get; set; } = null!;
 
 }
