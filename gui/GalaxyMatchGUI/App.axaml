@@ -8,6 +8,13 @@
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
+
+	<Application.Resources>
+		<ResourceDictionary>
+			<local:AttributeIconConverter x:Key="AttributeIconConverter"/>
+			<local:AttributeNameConverter x:Key="AttributeNameConverter"/>
+		</ResourceDictionary>
+	</Application.Resources>
   
     <Application.Styles>
         <FluentTheme />
