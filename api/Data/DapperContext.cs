@@ -8,5 +8,5 @@ public class DapperContext
     public DapperContext(IConfiguration config) => _config = config;
 
     public IDbConnection CreateConnection()
-        => new NpgsqlConnection(_config.GetConnectionString("Default"));
+        => new NpgsqlConnection(_config.GetConnectionString("DefaultConnection"));
 }
