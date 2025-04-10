@@ -9,9 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
-  </ItemGroup>
+  </ItemGroup>	
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.2.6" />
@@ -34,11 +33,18 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Views\LoginWindow.axaml.cs">
-      <DependentUpon>LoginWindow.axaml</DependentUpon>
+    <Compile Update="Views\LoginView.axaml.cs">
+      <DependentUpon>LoginView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\SwipeWindow.axaml.cs">
-      <DependentUpon>SwipeWindow.axaml</DependentUpon>
+    <Compile Update="Views\MainView.axaml.cs">
+      <DependentUpon>MainView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\SwipeView.axaml.cs">
+      <DependentUpon>SwipeView.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Converters\" />
   </ItemGroup>
 </Project>

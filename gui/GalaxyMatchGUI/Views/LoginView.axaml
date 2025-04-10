@@ -3,15 +3,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:GalaxyMatchGUI.ViewModels"
-		x:DataType="vm:LoginWindowViewModel"
+		x:DataType="vm:LoginViewModel"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="GalaxyMatchGUI.LoginWindow"
+        x:Class="GalaxyMatchGUI.LoginView"
         Width="450" Height="700"
         Background="#0D0221"
         Title="Login">
 
 	<Design.DataContext>
-		<vm:LoginWindowViewModel/>
+		<vm:LoginViewModel/>
 	</Design.DataContext>
 
 	<Window.Styles>

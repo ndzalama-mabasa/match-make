@@ -8,25 +8,24 @@ namespace GalaxyMatchGUI
     public class ViewLocator : IDataTemplate
     {
 
-        public Control? Build(object? param)
+        public Control? Build(object? data)
         {
-            if (param is null)
+            if (data is null)
                 return null;
 
-            var name = param.GetType().FullName!.Replace("ViewModel", "View", StringComparison.Ordinal);
-            var type = Type.GetType(name);
+            var viewName = data.GetType().FullName!.Replace("ViewModel", "View", StringComparison.InvariantCulture);
+            var type = Type.GetType(viewName);
 
-            if (type != null)
+            if (type == null)
             {
-                return (Control)Activator.CreateInstance(type)!;
+                return null;
             }
 
-            return new TextBlock { Text = "Not Found: " + name };
+            var control = (Control)Activator.CreateInstance(type)!;
+            control.DataContext = data;
+            return control;
         }
 
-        public bool Match(object? data)
-        {
-            return data is ViewModelBase;
-        }
+        public bool Match(object? data) => data is ViewModelBase;
     }
 }
