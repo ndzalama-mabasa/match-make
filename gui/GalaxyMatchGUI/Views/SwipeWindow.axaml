@@ -1,0 +1,164 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="GalaxyMatchGUI.SwipeWindow"
+		Width="450" Height="700"
+        Title="Meet your alien"
+        Background="#0D0221">
+
+	<Window.Styles>
+		<Style Selector="Button.actionButton">
+			<Setter Property="Width" Value="60"/>
+			<Setter Property="Height" Value="60"/>
+			<Setter Property="CornerRadius" Value="30"/>
+			<Setter Property="Cursor" Value="Hand"/>
+			<Setter Property="Transitions">
+				<Transitions>
+					<TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2"/>
+				</Transitions>
+			</Setter>
+		</Style>
+		<Style Selector="Button.actionButton:pointerover">
+			<Setter Property="RenderTransform" Value="scale(1.1)"/>
+		</Style>
+
+		<!-- BoxShadow style for the card -->
+		<Style Selector="Border#swipeCard">
+			<Setter Property="BoxShadow" Value="0 5 20 10 #5D12D2"/>
+		</Style>
+	</Window.Styles>
+
+	<Grid>
+		<!-- Space background with stars -->
+		<Canvas>
+			<Ellipse Canvas.Left="40" Canvas.Top="100" Width="4" Height="4" Fill="#FFFFFF" Opacity="0.8"/>
+			<Ellipse Canvas.Left="120" Canvas.Top="80" Width="2" Height="2" Fill="#FFFFFF" Opacity="0.6"/>
+			<Ellipse Canvas.Left="200" Canvas.Top="150" Width="3" Height="3" Fill="#FFFFFF" Opacity="0.7"/>
+			<Ellipse Canvas.Left="300" Canvas.Top="200" Width="2" Height="2" Fill="#FFFFFF" Opacity="0.5"/>
+			<Ellipse Canvas.Left="50" Canvas.Top="300" Width="2" Height="2" Fill="#FFFFFF" Opacity="0.6"/>
+			<Ellipse Canvas.Left="250" Canvas.Top="350" Width="3" Height="3" Fill="#FFFFFF" Opacity="0.8"/>
+			<Ellipse Canvas.Left="350" Canvas.Top="120" Width="4" Height="4" Fill="#FFFFFF" Opacity="0.7"/>
+			<Ellipse Canvas.Left="150" Canvas.Top="400" Width="2" Height="2" Fill="#FFFFFF" Opacity="0.5"/>
+			<Ellipse Canvas.Left="320" Canvas.Top="450" Width="3" Height="3" Fill="#FFFFFF" Opacity="0.7"/>
+			<Ellipse Canvas.Left="80" Canvas.Top="500" Width="2" Height="2" Fill="#FFFFFF" Opacity="0.6"/>
+
+			<!-- Small planet in background -->
+			<Ellipse Canvas.Left="30" Canvas.Top="50" Width="40" Height="40" Opacity="0.6">
+				<Ellipse.Fill>
+					<RadialGradientBrush>
+						<GradientStop Color="#FF4D6E" Offset="0"/>
+						<GradientStop Color="#B92B5C" Offset="1"/>
+					</RadialGradientBrush>
+				</Ellipse.Fill>
+			</Ellipse>
+		</Canvas>
+
+		<!-- Header with app name and navigation -->
+		<Grid VerticalAlignment="Top" Height="60">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+				<TextBlock Text="Alien" FontSize="22" FontWeight="Bold" Foreground="#00FF9F"/>
+				<TextBlock Text="Match" FontSize="22" FontWeight="Bold" Foreground="#9D4EDD"/>
+			</StackPanel>
+			<Button HorizontalAlignment="Left" Margin="15,0,0,0"
+                    Width="40" Height="40" CornerRadius="20" Background="#2A0F5B">
+				<TextBlock Text="👤" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+			</Button>
+			<Button HorizontalAlignment="Right" Margin="0,0,15,0"
+                    Width="40" Height="40" CornerRadius="20" Background="#2A0F5B">
+				<TextBlock Text="💬" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+			</Button>
+		</Grid>
+
+		<!-- Swipeable Card -->
+		<Border x:Name="swipeCard" Width="380" Height="520" CornerRadius="15" Margin="0,30,0,0"
+                Background="#1E0B45" ClipToBounds="True">
+			<Grid>
+				<!-- Profile Image with gradient overlay -->
+				<Border Height="350" VerticalAlignment="Top" ClipToBounds="True">
+					<!-- Replace with your actual image path -->
+					<Border.Background>
+						<ImageBrush Source="/Assets/alien_profile.png" Stretch="UniformToFill"/>
+					</Border.Background>
+					<!-- Gradient overlay for better text visibility -->
+					<Border VerticalAlignment="Bottom" Height="150">
+						<Border.Background>
+							<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+								<GradientStop Color="#001E0B45" Offset="0"/>
+								<GradientStop Color="#FF1E0B45" Offset="1"/>
+							</LinearGradientBrush>
+						</Border.Background>
+					</Border>
+				</Border>
+
+				<!-- Profile Information -->
+				<Border Padding="20" VerticalAlignment="Bottom">
+					<StackPanel VerticalAlignment="Bottom">
+						<StackPanel Orientation="Horizontal" Spacing="10">
+							<TextBlock Text="Groot" FontSize="28" FontWeight="Bold" Foreground="#FFFFFF"/>
+							<TextBlock Text="129" FontSize="28" FontWeight="Bold" Foreground="#CCCCFF"/>
+							<Border Background="#7B2CBF" CornerRadius="10" Padding="8,2" VerticalAlignment="Center">
+								<TextBlock Text="Zorgonian" FontSize="14" Foreground="White"/>
+							</Border>
+						</StackPanel>
+
+						<TextBlock Text="Planet: Zorgon Prime • 42 light-years away"
+                                   Foreground="#9F9FFF" FontSize="16" Margin="0,5,0,10"/>
+
+						<!-- Physical Attributes -->
+						<WrapPanel Margin="0,5,0,10">
+							<Border Background="#2A0F5B" CornerRadius="15" Padding="10,5" Margin="0,0,8,8">
+								<StackPanel Orientation="Horizontal" Spacing="5">
+									<TextBlock Text="🧠" FontSize="14"/>
+									<TextBlock Text="Telepathic" Foreground="#CCCCFF" FontSize="14"/>
+								</StackPanel>
+							</Border>
+							<Border Background="#2A0F5B" CornerRadius="15" Padding="10,5" Margin="0,0,8,8">
+								<StackPanel Orientation="Horizontal" Spacing="5">
+									<TextBlock Text="💕" FontSize="14"/>
+									<TextBlock Text="3 Hearts" Foreground="#CCCCFF" FontSize="14"/>
+								</StackPanel>
+							</Border>
+							<Border Background="#2A0F5B" CornerRadius="15" Padding="10,5" Margin="0,0,8,8">
+								<StackPanel Orientation="Horizontal" Spacing="5">
+									<TextBlock Text="📏" FontSize="14"/>
+									<TextBlock Text="7.2 ft" Foreground="#CCCCFF" FontSize="14"/>
+								</StackPanel>
+							</Border>
+						</WrapPanel>
+
+						<!-- Bio -->
+						<TextBlock Text="Greetings, Earth dwellers! I am Groot! I enjoy quantum physics, telepathic chess, and long floats in the ammonia seas. Looking for someone who appreciates tentacle humor and doesn't mind occasional shape-shifting."
+                                   Foreground="#CCCCFF" FontSize="15" TextWrapping="Wrap"/>
+
+						<!-- Interests -->
+						<TextBlock Text="Interests:" Foreground="#00FF9F" FontSize="16" FontWeight="SemiBold" Margin="0,10,0,5"/>
+						<WrapPanel>
+							<Border Background="#2A0F5B" CornerRadius="15" Padding="10,5" Margin="0,0,8,8">
+								<TextBlock Text="Cosmic Travel" Foreground="#CCCCFF" FontSize="14"/>
+							</Border>
+							<Border Background="#2A0F5B" CornerRadius="15" Padding="10,5" Margin="0,0,8,8">
+								<TextBlock Text="Telepathy" Foreground="#CCCCFF" FontSize="14"/>
+							</Border>
+							<Border Background="#2A0F5B" CornerRadius="15" Padding="10,5" Margin="0,0,8,8">
+								<TextBlock Text="Human Studies" Foreground="#CCCCFF" FontSize="14"/>
+							</Border>
+						</WrapPanel>
+					</StackPanel>
+				</Border>
+			</Grid>
+		</Border>
+
+		<!-- Action Buttons -->
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,30" Spacing="20">
+			<Button Classes="actionButton" Background="#FF4757">
+				<TextBlock Text="✗" FontSize="28" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+			</Button>
+
+			<Button Classes="actionButton" Background="#00FF9F">
+				<TextBlock Text="♥" FontSize="28" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+			</Button>
+		</StackPanel>
+	</Grid>
+</Window>
