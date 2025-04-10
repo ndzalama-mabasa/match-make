@@ -19,5 +19,16 @@ namespace galaxy_match_make.Controllers
             var Profiles = await _profileRepository.GetAllProfiles();
             return Ok(Profiles);
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ProfileDto>> GetProfileById(Guid id)
+        {
+            var Profile = await _profileRepository.GetProfileById(id);
+            if (Profile == null)
+            {
+                return NotFound("This profile does not exist");
+            }
+            return Ok(Profile);
+        }
     }
 }
