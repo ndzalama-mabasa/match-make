@@ -5,12 +5,12 @@ using GalaxyMatchGUI.ViewModels;
 
 namespace GalaxyMatchGUI
 {
-    public partial class LoginWindow : Window
+    public partial class LoginView : Window
     {
-        public LoginWindow()
+        public LoginView()
         {
             InitializeComponent();
-            DataContext = new LoginWindowViewModel();
+            DataContext = new LoginViewModel();
         }
 
         private void InitializeComponent()

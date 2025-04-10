@@ -12,10 +12,10 @@ namespace GalaxyMatchGUI.Views
 
         private async void OnGoogleSignInClicked(object? sender, RoutedEventArgs e)
         {
-            var swipeWindow = new SwipeWindow();
+            var swipeView = new SwipeView();
 
             // Show the new window
-            swipeWindow.Show();
+            swipeView.Show();
 
             // Optionally, close the current window after navigating
             this.Close();

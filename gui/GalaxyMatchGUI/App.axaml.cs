@@ -1,11 +1,9 @@
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using GalaxyMatchGUI.ViewModels;
-using GalaxyMatchGUI.Views;
 
 namespace GalaxyMatchGUI
 {
@@ -14,6 +12,7 @@ namespace GalaxyMatchGUI
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
+            DataTemplates.Add(new ViewLocator());
         }
 
         public override void OnFrameworkInitializationCompleted()
@@ -23,7 +22,10 @@ namespace GalaxyMatchGUI
                 // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
                 // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
                 DisableAvaloniaDataAnnotationValidation();
-                desktop.MainWindow = new LoginWindow();
+                desktop.MainWindow = new LoginView();
+                {
+                    DataContext = new LoginViewModel();
+                };
             }
 
             base.OnFrameworkInitializationCompleted();

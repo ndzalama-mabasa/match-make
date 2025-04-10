@@ -1,0 +1,292 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\c#\\galaxy-match-make-MONO\\api\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|d:\\c#\\galaxy-match-make-mono\\api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|d:\\c#\\galaxy-match-make-mono\\api\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|solutionrelative:appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|d:\\c#\\galaxy-match-make-mono\\api\\controllers\\profilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|solutionrelative:controllers\\profilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|d:\\c#\\galaxy-match-make-mono\\api\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|solutionrelative:controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|d:\\c#\\galaxy-match-make-mono\\api\\controllers\\planetscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|solutionrelative:controllers\\planetscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|d:\\c#\\galaxy-match-make-mono\\api\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|solutionrelative:repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|d:\\c#\\galaxy-match-make-mono\\api\\repositories\\profilerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|solutionrelative:repositories\\profilerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|d:\\c#\\galaxy-match-make-mono\\api\\repositories\\planetrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|solutionrelative:repositories\\planetrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|d:\\c#\\galaxy-match-make-mono\\api\\repositories\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|solutionrelative:repositories\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|d:\\c#\\galaxy-match-make-mono\\api\\repositories\\iprofilerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|solutionrelative:repositories\\iprofilerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|d:\\c#\\galaxy-match-make-mono\\api\\repositories\\iplanetrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|solutionrelative:repositories\\iplanetrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|d:\\c#\\galaxy-match-make-mono\\api\\models\\userdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|solutionrelative:models\\userdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|d:\\c#\\galaxy-match-make-mono\\api\\models\\profiledto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|solutionrelative:models\\profiledto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|d:\\c#\\galaxy-match-make-mono\\api\\models\\planetdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|solutionrelative:models\\planetdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|d:\\c#\\galaxy-match-make-mono\\api\\data\\dappercontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|solutionrelative:data\\dappercontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|d:\\c#\\galaxy-match-make-mono\\api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{ECD8AC68-4588-A034-E7F9-61B78548CDC1}|galaxy-match-make.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 6,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ProfileController.cs",
+              "DocumentMoniker": "D:\\c#\\galaxy-match-make-MONO\\api\\Controllers\\ProfileController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ProfileController.cs",
+              "ToolTip": "D:\\c#\\galaxy-match-make-MONO\\api\\Controllers\\ProfileController.cs",
+              "RelativeToolTip": "Controllers\\ProfileController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T19:46:02.917Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ProfileRepository.cs",
+              "DocumentMoniker": "D:\\c#\\galaxy-match-make-MONO\\api\\Repositories\\ProfileRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\ProfileRepository.cs",
+              "ToolTip": "D:\\c#\\galaxy-match-make-MONO\\api\\Repositories\\ProfileRepository.cs",
+              "RelativeToolTip": "Repositories\\ProfileRepository.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABkAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T19:39:53.28Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "D:\\c#\\galaxy-match-make-MONO\\api\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "Controllers\\UserController.cs",
+              "ToolTip": "D:\\c#\\galaxy-match-make-MONO\\api\\Controllers\\UserController.cs",
+              "RelativeToolTip": "Controllers\\UserController.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T18:53:43.859Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "UserRepository.cs",
+              "DocumentMoniker": "D:\\c#\\galaxy-match-make-MONO\\api\\Repositories\\UserRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\UserRepository.cs",
+              "ToolTip": "D:\\c#\\galaxy-match-make-MONO\\api\\Repositories\\UserRepository.cs",
+              "RelativeToolTip": "Repositories\\UserRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACYAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T18:49:58.311Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "PlanetsController.cs",
+              "DocumentMoniker": "D:\\c#\\galaxy-match-make-MONO\\api\\Controllers\\PlanetsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\PlanetsController.cs",
+              "ToolTip": "D:\\c#\\galaxy-match-make-MONO\\api\\Controllers\\PlanetsController.cs",
+              "RelativeToolTip": "Controllers\\PlanetsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T18:41:34.957Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "D:\\c#\\galaxy-match-make-MONO\\api\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "appsettings.Development.json",
+              "ToolTip": "D:\\c#\\galaxy-match-make-MONO\\api\\appsettings.Development.json",
+              "RelativeToolTip": "appsettings.Development.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-04-09T18:56:41.908Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\c#\\galaxy-match-make-MONO\\api\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "D:\\c#\\galaxy-match-make-MONO\\api\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T18:40:48.138Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "IUserRepository.cs",
+              "DocumentMoniker": "D:\\c#\\galaxy-match-make-MONO\\api\\Repositories\\IUserRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\IUserRepository.cs",
+              "ToolTip": "D:\\c#\\galaxy-match-make-MONO\\api\\Repositories\\IUserRepository.cs",
+              "RelativeToolTip": "Repositories\\IUserRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T19:37:54.033Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "IProfileRepository.cs",
+              "DocumentMoniker": "D:\\c#\\galaxy-match-make-MONO\\api\\Repositories\\IProfileRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\IProfileRepository.cs",
+              "ToolTip": "D:\\c#\\galaxy-match-make-MONO\\api\\Repositories\\IProfileRepository.cs",
+              "RelativeToolTip": "Repositories\\IProfileRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T19:39:43.81Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "IPlanetRepository.cs",
+              "DocumentMoniker": "D:\\c#\\galaxy-match-make-MONO\\api\\Repositories\\IPlanetRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\IPlanetRepository.cs",
+              "ToolTip": "D:\\c#\\galaxy-match-make-MONO\\api\\Repositories\\IPlanetRepository.cs",
+              "RelativeToolTip": "Repositories\\IPlanetRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T18:52:32.517Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "UserDto.cs",
+              "DocumentMoniker": "D:\\c#\\galaxy-match-make-MONO\\api\\Models\\UserDto.cs",
+              "RelativeDocumentMoniker": "Models\\UserDto.cs",
+              "ToolTip": "D:\\c#\\galaxy-match-make-MONO\\api\\Models\\UserDto.cs",
+              "RelativeToolTip": "Models\\UserDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T18:40:02.643Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "PlanetRepository.cs",
+              "DocumentMoniker": "D:\\c#\\galaxy-match-make-MONO\\api\\Repositories\\PlanetRepository.cs",
+              "RelativeDocumentMoniker": "Repositories\\PlanetRepository.cs",
+              "ToolTip": "D:\\c#\\galaxy-match-make-MONO\\api\\Repositories\\PlanetRepository.cs",
+              "RelativeToolTip": "Repositories\\PlanetRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T18:50:40.401Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "ProfileDto.cs",
+              "DocumentMoniker": "D:\\c#\\galaxy-match-make-MONO\\api\\Models\\ProfileDto.cs",
+              "RelativeDocumentMoniker": "Models\\ProfileDto.cs",
+              "ToolTip": "D:\\c#\\galaxy-match-make-MONO\\api\\Models\\ProfileDto.cs",
+              "RelativeToolTip": "Models\\ProfileDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T18:40:13.044Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "DapperContext.cs",
+              "DocumentMoniker": "D:\\c#\\galaxy-match-make-MONO\\api\\Data\\DapperContext.cs",
+              "RelativeDocumentMoniker": "Data\\DapperContext.cs",
+              "ToolTip": "D:\\c#\\galaxy-match-make-MONO\\api\\Data\\DapperContext.cs",
+              "RelativeToolTip": "Data\\DapperContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAABOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T18:54:10.508Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "PlanetDto.cs",
+              "DocumentMoniker": "D:\\c#\\galaxy-match-make-MONO\\api\\Models\\PlanetDto.cs",
+              "RelativeDocumentMoniker": "Models\\PlanetDto.cs",
+              "ToolTip": "D:\\c#\\galaxy-match-make-MONO\\api\\Models\\PlanetDto.cs",
+              "RelativeToolTip": "Models\\PlanetDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-09T18:51:52.782Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\c#\\galaxy-match-make-MONO\\api\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "D:\\c#\\galaxy-match-make-MONO\\api\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-04-09T18:55:18.272Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
