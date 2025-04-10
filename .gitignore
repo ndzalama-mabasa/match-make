@@ -206,6 +206,7 @@ appsettings.*.json
 
 # VS Code specific files (optional, depending on team agreement)
 .vscode/*
+.vs/
 !.vscode/settings.json # Example: Keep shared settings
 !.vscode/launch.json # Example: Keep shared launch config
 !.vscode/tasks.json # Example: Keep shared tasks
