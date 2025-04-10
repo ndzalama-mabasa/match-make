@@ -11,7 +11,7 @@ public class PlanetRepository : IPlanetRepository
 
     public async Task<IEnumerable<PlanetDto>> GetAllPlanetsAsync()
     {
-        var query = "SELECT * FROM Planets";
+        var query = "SELECT Id, planet_name FROM Planets";
         using var connection = _context.CreateConnection();
         return await connection.QueryAsync<PlanetDto>(query);
     }
