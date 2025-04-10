@@ -1,8 +1,11 @@
 {
   "ExpandedNodes": [
     "",
-    "\\api"
+    "\\api",
+    "\\api\\Controllers",
+    "\\api\\Models",
+    "\\api\\Repositories"
   ],
-  "SelectedNode": "\\api",
+  "SelectedNode": "\\.gitignore",
   "PreviewInSolutionExplorer": false
 }
