@@ -2,6 +2,7 @@
 # Operating System Files #
 ##########################
 
+.vs/
 # OSX
 .DS_Store
 .AppleDouble

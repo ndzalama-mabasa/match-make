@@ -19,7 +19,7 @@ namespace galaxy_match_make.Repositories
                 .GetConnectionString("DefaultConnection"));
         }
 
-        public async Task<List<UserDto>> GetAllUsers()
+        public async Task<IEnumerable<UserDto>> GetAllUsers()
         {
             using var connection = GetConnection();
             var users = await connection.QueryAsync<UserDto>("SELECT * FROM USERS");
