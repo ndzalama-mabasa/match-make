@@ -7,7 +7,7 @@ namespace GalaxyMatchGUI.Models
     {
         public Profile()
         {
-            ProfileInterests = new HashSet<ProfileInterest>();
+            UserInterests = new HashSet<UserInterest>();
         }
         
         public int Id { get; set; }
@@ -26,6 +26,6 @@ namespace GalaxyMatchGUI.Models
         public required Species Species { get; set; }
         public required Planet Planet { get; set; }
         public Gender? Gender { get; set; }
-        public ICollection<ProfileInterest> ProfileInterests { get; set; }
+        public ICollection<UserInterest> UserInterests { get; set; }
     }
 }
