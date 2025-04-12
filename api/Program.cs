@@ -11,12 +11,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<DapperContext>();
+
 builder.Services.AddScoped<IPlanetRepository, PlanetRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IReactionRepository, ReactionRepository>();
+
 builder.Services.AddScoped<GoogleAuthService>();
 builder.Services.AddHttpClient();
-builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
 builder.Services.AddSingleton(sp =>
 {
