@@ -1,59 +1,44 @@
-﻿using System.Reactive;
+using System;
 using System.Threading.Tasks;
-using Avalonia.Controls.ApplicationLifetimes;
+using CommunityToolkit.Mvvm.ComponentModel;
 using GalaxyMatchGUI.Services;
-using ReactiveUI;
+using CommunityToolkit.Mvvm.Input;
 
 namespace GalaxyMatchGUI.ViewModels
 {
-    public class LoginViewModel : ViewModelBase
+    public partial class LoginViewModel : ViewModelBase
     {
-        private bool _isLoading;
+        [ObservableProperty]
+        private bool _isLoggingIn;
+
+        [ObservableProperty]
         private string _statusMessage = string.Empty;
 
         public LoginViewModel()
         {
-            GoogleSignInCommand = ReactiveCommand.CreateFromTask(SignInWithGoogleAsync, this.WhenAnyValue(x => x.IsLoading, isLoading => !isLoading));
         }
 
-        public bool IsLoading
-        {
-            get => _isLoading;
-            set => this.SetProperty(ref _isLoading, value);
-        }
-
-        public string StatusMessage
-        {
-            get => _statusMessage;
-            set => SetProperty(ref _statusMessage, value);
-        }
-
-        // Command for Google Sign In
-        public ReactiveCommand<Unit, Unit> GoogleSignInCommand { get; }
-
-        // Method that will be executed when the command is triggered
-        private async Task SignInWithGoogleAsync()
+        [RelayCommand]
+        public async Task GoogleSignInAsync()
         {
             try
             {
-                IsLoading = true;
-                StatusMessage = "Contacting galactic servers...";
+                IsLoggingIn = true;
+                StatusMessage = "Signing in with Google...";
 
                 var authService = new AuthService();
                 await authService.StartLoginFlow();
-
-                // Simulate login success
-                StatusMessage = "Login successful! Navigating through the wormhole...";
-
                 
+                // Navigate to the matching view using our navigation service
+                NavigationService?.NavigateTo<MatchingViewModel>();
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                StatusMessage = $"Login Failed: {ex.Message}";
+                StatusMessage = $"Sign-in failed: {ex.Message}";
             }
             finally
             {
-                IsLoading = false;
+                IsLoggingIn = false;
             }
         }
     }

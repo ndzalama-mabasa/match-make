@@ -1,33 +1,18 @@
-﻿using System.Collections.Generic;
-using ReactiveUI;
+using System.Collections.Generic;
 
-public class Gender : ReactiveObject
+namespace GalaxyMatchGUI.Models
 {
-    private int _id;
-    private string _gender;
-
-    private IReadOnlyList<Profile> _profiles;
-
-    public Gender()
+    public class Gender
     {
-        _profiles = new List<Profile>().AsReadOnly();
-    }
-
-    public int Id
-    {
-        get => _id;
-        set => this.RaiseAndSetIfChanged(ref _id, value);
-    }
-
-    public string GenderName
-    {
-        get => _gender;
-        set => this.RaiseAndSetIfChanged(ref _gender, value);
-    }
-
-    public IReadOnlyList<Profile> Profiles
-    {
-        get => _profiles;
-        set => this.RaiseAndSetIfChanged(ref _profiles, value);
+        public Gender()
+        {
+            Profiles = new HashSet<Profile>();
+        }
+        
+        public int Id { get; set; }
+        public required string GenderName { get; set; }
+        
+        // Navigation property
+        public ICollection<Profile> Profiles { get; set; }
     }
 }

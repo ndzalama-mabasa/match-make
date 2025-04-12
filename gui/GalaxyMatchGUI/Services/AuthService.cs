@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Threading;
@@ -12,6 +14,9 @@ public class AuthService : IDisposable
 {
     private HttpListener? _listener;
     private bool _disposed;
+    // Base API URL - change between HTTP and HTTPS as needed
+    private const string ApiBaseUrl = "http://localhost:5284"; 
+    // private const string ApiBaseUrl = "https://localhost:7280"; 
 
     public async Task StartLoginFlow()
     {
@@ -23,8 +28,14 @@ public class AuthService : IDisposable
             _listener.Prefixes.Add(localCallbackUrl);
             _listener.Start();
             
-            using var httpClient = new HttpClient();
-            var authUrl = await httpClient.GetStringAsync("https://localhost:7280/api/auth/google-login");
+            // Create HttpClient with SSL certificate validation bypass for development
+            var httpClientHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+            using var httpClient = new HttpClient(httpClientHandler);
+            
+            var authUrl = await httpClient.GetStringAsync($"{ApiBaseUrl}/api/auth/google-login");
 
             Process.Start(new ProcessStartInfo
             {
@@ -53,7 +64,7 @@ public class AuthService : IDisposable
             
             if (!string.IsNullOrWhiteSpace(authCode))
             {
-                var jwtResponse = await httpClient.GetAsync($"https://localhost:7280/api/auth/google-callback?code={authCode}");
+                var jwtResponse = await httpClient.GetAsync($"{ApiBaseUrl}/api/auth/google-callback?code={authCode}");
                 jwtResponse.EnsureSuccessStatusCode();
 
                 var content = await jwtResponse.Content.ReadAsStringAsync();

@@ -1,55 +1,27 @@
-﻿using ReactiveUI;
 using System;
 using System.Collections.Generic;
 
-public class User : ReactiveObject
+namespace GalaxyMatchGUI.Models
 {
-    private Guid _id;
-    private string _oauthId;
-    private bool _inactive;
-    private Profile _profile;
-    private IReadOnlyList<UserAttribute> _attributes;
-    private IReadOnlyList<UserInterest> _interests;
+    public class User
+    {
+        public User()
+        {
+            SentReactions = new HashSet<Reaction>();
+            ReceivedReactions = new HashSet<Reaction>();
+            SentMessages = new HashSet<Message>();
+            ReceivedMessages = new HashSet<Message>();
+        }
 
-    public User()
-    {
-        _attributes = new List<UserAttribute>().AsReadOnly();
-        _interests = new List<UserInterest>().AsReadOnly();
-    }
-
-    public Guid Id
-    {
-        get => _id;
-        set => this.RaiseAndSetIfChanged(ref _id, value);
-    }
-
-    public string OAuthId
-    {
-        get => _oauthId;
-        set => this.RaiseAndSetIfChanged(ref _oauthId, value);
-    }
-
-    public bool Inactive
-    {
-        get => _inactive;
-        set => this.RaiseAndSetIfChanged(ref _inactive, value);
-    }
-
-    public Profile Profile
-    {
-        get => _profile;
-        set => this.RaiseAndSetIfChanged(ref _profile, value);
-    }
-    
-    public IReadOnlyList<UserAttribute> Attributes
-    {
-        get => _attributes;
-        set => this.RaiseAndSetIfChanged(ref _attributes, value);
-    }
-    
-    public IReadOnlyList<UserInterest> Interests
-    {
-        get => _interests;
-        set => this.RaiseAndSetIfChanged(ref _interests, value);
+        public Guid Id { get; set; }
+        public required string OauthId { get; set; }
+        public bool Inactive { get; set; }
+        
+        // Navigation properties
+        public Profile? Profile { get; set; }  // Made optional by removing required keyword and adding nullable
+        public ICollection<Reaction> SentReactions { get; set; }
+        public ICollection<Reaction> ReceivedReactions { get; set; }
+        public ICollection<Message> SentMessages { get; set; }
+        public ICollection<Message> ReceivedMessages { get; set; }
     }
 }
