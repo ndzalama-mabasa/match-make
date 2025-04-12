@@ -6,9 +6,12 @@ namespace galaxy_match_make.Repositories
     {
         Task<IEnumerable<UserDto>> GetAllUsers();
         Task<UserDto> GetUserById(Guid id);
-        Task AddUser(UserDto user);
         Task UpdateUser(UserDto user);
         Task DeleteUser(Guid id);
+        
+        Task AddUser(string oauthId);
+        
+        Task<UserDto> GetUserByOauthId(string oauthId);
 
     }
 }

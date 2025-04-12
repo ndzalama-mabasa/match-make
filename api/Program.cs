@@ -1,5 +1,6 @@
 using galaxy_match_make.Data;
 using galaxy_match_make.Repositories;
+using galaxy_match_make.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,8 @@ builder.Services.AddSingleton<DapperContext>();
 builder.Services.AddScoped<IPlanetRepository, PlanetRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
+builder.Services.AddScoped<GoogleAuthService>();
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
 builder.Services.AddSingleton(sp =>
@@ -33,6 +36,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<MiddlewareService>();
 
 app.UseAuthorization();
 
