@@ -1,15 +1,9 @@
 using System;
 using System.Threading.Tasks;
-<<<<<<< HEAD
 using CommunityToolkit.Mvvm.ComponentModel;
 using GalaxyMatchGUI.Services;
 using CommunityToolkit.Mvvm.Input;
 using GalaxyMatchGUI.Models;
-=======
-using Avalonia.Controls.ApplicationLifetimes;
-using GalaxyMatchGUI.Services;
-using ReactiveUI;
->>>>>>> dev
 
 namespace GalaxyMatchGUI.ViewModels
 {
@@ -30,19 +24,8 @@ namespace GalaxyMatchGUI.ViewModels
         {
             try
             {
-<<<<<<< HEAD
                 IsLoggingIn = true;
-                StatusMessage = "Signing in with Google...";
-=======
-                IsLoading = true;
                 StatusMessage = "Contacting galactic servers...";
-
-                var authService = new AuthService();
-                await authService.StartLoginFlow();
-
-                // Simulate login success
-                StatusMessage = "Login successful! Navigating through the wormhole...";
->>>>>>> dev
 
                 var authService = new AuthService();
                 var authResponse = await authService.StartLoginFlow();
