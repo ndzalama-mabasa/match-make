@@ -18,12 +18,29 @@ public class PlanetRepository : IPlanetRepository
 
     public async Task<PlanetDto> GetPlanetByIdAsync(int id)
     {
-        var query = @"SELECT id, planet_name FROM planets WHERE id=@id";
+        var query = "SELECT id, planet_name FROM planets WHERE id = @Id";
+        using var connection = _context.CreateConnection();
+        return await connection.QuerySingleOrDefaultAsync<PlanetDto>(query, new { Id = id });
+    }
 
-        var connection = _context.CreateConnection();
+    public async Task AddPlanetAsync(PlanetDto planet)
+    {
+        var query = "INSERT INTO planets (planet_name) VALUES (@PlanetName)";
+        using var connection = _context.CreateConnection();
+        await connection.ExecuteAsync(query, planet);
+    }
 
-        var planet = await connection.QuerySingleOrDefaultAsync<PlanetDto>(query, new { id });
+    public async Task UpdatePlanetAsync(int id, PlanetDto planet)
+    {
+        var query = "UPDATE planets SET planet_name = @PlanetName WHERE id = @Id";
+        using var connection = _context.CreateConnection();
+        await connection.ExecuteAsync(query, new { planet.PlanetName, Id = id });
+    }
 
-        return planet!;
+    public async Task DeletePlanetAsync(int id)
+    {
+        var query = "DELETE FROM planets WHERE id = @Id";
+        using var connection = _context.CreateConnection();
+        await connection.ExecuteAsync(query, new { Id = id });
     }
 }

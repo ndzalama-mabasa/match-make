@@ -6,5 +6,7 @@ public interface IPlanetRepository
 {
     Task<IEnumerable<PlanetDto>> GetAllPlanetsAsync();
     Task<PlanetDto> GetPlanetByIdAsync(int id);
-
+    Task AddPlanetAsync(PlanetDto planet);
+    Task UpdatePlanetAsync(int id, PlanetDto planet);
+    Task DeletePlanetAsync(int id);
 }
