@@ -6,7 +6,8 @@ namespace galaxy_match_make.Repositories
     {
         Task<IEnumerable<ProfileDto>> GetAllProfiles();
         Task<ProfileDto> GetProfileById(Guid id);
-        
 
+        Task UpdateProfile(ProfileDto profile);
+        Task CreateProfile(ProfileDto profile);
     }
 }
