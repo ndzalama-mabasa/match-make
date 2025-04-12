@@ -1,0 +1,4 @@
+CREATE TABLE genders (
+    id SERIAL PRIMARY KEY NOT NULL,
+    gender VARCHAR NOT NULL
+);

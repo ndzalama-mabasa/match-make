@@ -1,0 +1,4 @@
+CREATE TABLE species (
+    id SERIAL PRIMARY KEY NOT NULL,
+    species_name VARCHAR UNIQUE NOT NULL
+);
