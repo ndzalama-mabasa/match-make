@@ -11,5 +11,5 @@ variable "db_password" {
 variable "db_name" {
   description = "The name of the database"
   type        = string
-  default     = "api_messenger_db"
+  default     = "galaxy-matchdb"
 }

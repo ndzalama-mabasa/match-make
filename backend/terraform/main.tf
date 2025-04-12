@@ -5,23 +5,26 @@ terraform {
       version = "~> 5.0"
     }
     postgresql = {
-      source = "cyrilgdn/postgresql"
+      source  = "cyrilgdn/postgresql"
       version = "~> 1.19.0"
     }
   }
 
   backend "s3" {
-    region  = "af-south-1"
+    bucket = "galaxy-terraform-prod-af-south-1"
+    key    = "backend/terraform/galaxy-matchdb.tfstate"
+    region = "af-south-1"
+    profile = "terraform-ci-user"
   }
 }
 
 provider "aws" {
   region = "af-south-1"
+  profile = "terraform-ci-user"
 }
 
-
 provider "postgresql" {
-  host            = aws_db_instance.api_messenger_db.address
+  host            = aws_db_instance.galaxy-matchdb.address
   port            = 5432
   username        = var.db_username
   password        = var.db_password
@@ -34,52 +37,109 @@ resource "random_id" "suffix" {
   byte_length = 4
 }
 
-data "aws_vpc" "default" {
-  default = true
+data "aws_availability_zones" "available" {}
+
+resource "aws_vpc" "main" {
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "galaxy-main-vpc"
+  }
 }
 
-data "aws_availability_zones" "available_zones" {}
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.main.id
 
-data "aws_subnet" "subnet_az1" {
-  availability_zone = data.aws_availability_zones.available_zones.names[0]
-  default_for_az    = true
-  vpc_id            = data.aws_vpc.default.id
+  tags = {
+    Name = "galaxy-igw"
+  }
 }
 
-data "aws_subnet" "subnet_az2" {
-  availability_zone = data.aws_availability_zones.available_zones.names[1]
-  default_for_az    = true
-  vpc_id            = data.aws_vpc.default.id
+resource "aws_route_table" "rt" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+
+  tags = {
+    Name = "galaxy-rt"
+  }
 }
 
-data "aws_subnet" "subnet_az3" {
-  availability_zone = data.aws_availability_zones.available_zones.names[2]
-  default_for_az    = true
-  vpc_id            = data.aws_vpc.default.id
+resource "aws_subnet" "subnet_az1" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = data.aws_availability_zones.available.names[0]
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "subnet-az1"
+  }
+}
+
+resource "aws_subnet" "subnet_az2" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.2.0/24"
+  availability_zone       = data.aws_availability_zones.available.names[1]
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "subnet-az2"
+  }
+}
+
+resource "aws_subnet" "subnet_az3" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.3.0/24"
+  availability_zone       = data.aws_availability_zones.available.names[2]
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "subnet-az3"
+  }
+}
+
+resource "aws_route_table_association" "a1" {
+  subnet_id      = aws_subnet.subnet_az1.id
+  route_table_id = aws_route_table.rt.id
+}
+
+resource "aws_route_table_association" "a2" {
+  subnet_id      = aws_subnet.subnet_az2.id
+  route_table_id = aws_route_table.rt.id
+}
+
+resource "aws_route_table_association" "a3" {
+  subnet_id      = aws_subnet.subnet_az3.id
+  route_table_id = aws_route_table.rt.id
 }
 
 resource "aws_db_subnet_group" "my_db_subnet_group" {
-  name        = "api-messenger-db-subnet-group-${random_id.suffix.hex}"
-  description = "Subnet group for the API Messenger database"
+  name        = "galaxy-match-db-subnet-group-${random_id.suffix.hex}"
+  description = "Subnet group for the Galaxy Match database"
   subnet_ids  = [
-    data.aws_subnet.subnet_az1.id,
-    data.aws_subnet.subnet_az2.id,
-    data.aws_subnet.subnet_az3.id
+    aws_subnet.subnet_az1.id,
+    aws_subnet.subnet_az2.id,
+    aws_subnet.subnet_az3.id
   ]
 }
 
 resource "aws_security_group" "db_sg" {
-  name        = "api-messenger-db-sg-${random_id.suffix.hex}"
-  description = "Security group for API Messenger database"
-  vpc_id      = data.aws_vpc.default.id
+  name        = "galaxy-match-db-sg-${random_id.suffix.hex}"
+  description = "Security group for galaxy match make database"
+  vpc_id      = aws_vpc.main.id
   
   ingress {
-    from_port   = 5432 
+    from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -88,24 +148,26 @@ resource "aws_security_group" "db_sg" {
   }
 }
 
-resource "aws_db_instance" "api_messenger_db" {
+resource "aws_db_instance" "galaxy-matchdb" {
   allocated_storage    = 20
   storage_type         = "gp2"
   engine               = "postgres"
   engine_version       = "17.4"
   instance_class       = "db.t3.micro"
-  identifier           = "api-messenger-db"
+  identifier           = "galaxy-match-db"
   username             = var.db_username
   password             = var.db_password
   skip_final_snapshot  = true
   publicly_accessible  = true
-  db_subnet_group_name = aws_db_subnet_group.my_db_subnet_group.id
+  db_subnet_group_name = aws_db_subnet_group.my_db_subnet_group.name
   vpc_security_group_ids = [aws_security_group.db_sg.id]
+
+  depends_on = [aws_route_table_association.a1]
 }
 
 resource "postgresql_database" "db" {
   name      = var.db_name
   owner     = var.db_username
-  
-  depends_on = [aws_db_instance.api_messenger_db]
+
+  depends_on = [aws_db_instance.galaxy-matchdb]
 }

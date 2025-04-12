@@ -1,0 +1,4 @@
+CREATE TABLE planets (
+    id SERIAL PRIMARY KEY NOT NULL,
+    planet_name VARCHAR UNIQUE NOT NULL
+);
