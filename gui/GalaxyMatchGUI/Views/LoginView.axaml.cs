@@ -1,11 +1,10 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using GalaxyMatchGUI.ViewModels;
 
-namespace GalaxyMatchGUI
+namespace GalaxyMatchGUI.Views
 {
-    public partial class LoginView : Window
+    public partial class LoginView : UserControl
     {
         public LoginView()
         {

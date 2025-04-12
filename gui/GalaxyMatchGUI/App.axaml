@@ -2,21 +2,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="GalaxyMatchGUI.App"
              xmlns:local="using:GalaxyMatchGUI"
+             xmlns:converters="using:GalaxyMatchGUI.Converters"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
-
-	<Application.Resources>
-		<ResourceDictionary>
-			<local:AttributeIconConverter x:Key="AttributeIconConverter"/>
-			<local:AttributeNameConverter x:Key="AttributeNameConverter"/>
-		</ResourceDictionary>
-	</Application.Resources>
   
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
+    
+    <Application.Resources>
+        <converters:InitialsConverter x:Key="InitialsConverter" />
+    </Application.Resources>
 </Application>

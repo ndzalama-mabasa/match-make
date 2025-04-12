@@ -1,32 +1,18 @@
-﻿using System.Collections.Generic;
-using ReactiveUI;
+using System.Collections.Generic;
 
-public class Planet : ReactiveObject
+namespace GalaxyMatchGUI.Models
 {
-    private int _id;
-    private string _planetName;
-    private IReadOnlyList<Profile> _profiles;
-
-    public Planet()
+    public class Planet
     {
-        _profiles = new List<Profile>().AsReadOnly();
-    }
-    
-    public int Id
-    {
-        get => _id;
-        set => this.RaiseAndSetIfChanged(ref _id, value);
-    }
-
-    public string PlanetName
-    {
-        get => _planetName;
-        set => this.RaiseAndSetIfChanged(ref _planetName, value);
-    }
-
-    public IReadOnlyList<Profile> Profiles
-    {
-        get => _profiles;
-        set => this.RaiseAndSetIfChanged(ref _profiles, value);
+        public Planet()
+        {
+            Profiles = new HashSet<Profile>();
+        }
+        
+        public int Id { get; set; }
+        public required string PlanetName { get; set; }
+        
+        // Navigation property
+        public ICollection<Profile> Profiles { get; set; }
     }
 }
