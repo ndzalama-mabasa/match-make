@@ -16,6 +16,13 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 builder.Services.AddScoped<GoogleAuthService>();
 builder.Services.AddHttpClient();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+
+builder.Services.AddSingleton(sp =>
+{
+    var context = sp.GetRequiredService<DapperContext>();
+    return context.CreateConnection();
+});
 Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
 
