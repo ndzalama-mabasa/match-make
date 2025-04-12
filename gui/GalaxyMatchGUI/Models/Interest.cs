@@ -1,34 +1,18 @@
-﻿using System.Collections.Generic;
-using ReactiveUI;
+using System.Collections.Generic;
 
-public class Interest : ReactiveObject
+namespace GalaxyMatchGUI.Models
 {
-    private int _id;
-    private string _interestName;
-
-    private IReadOnlyList<UserInterest> _userInterests;
-
-    public Interest()
+    public class Interest
     {
-        _userInterests = new List<UserInterest>().AsReadOnly();
-    }
-
-
-    public int Id
-    {
-        get => _id;
-        set => this.RaiseAndSetIfChanged(ref _id, value);
-    }
-
-    public string InterestName
-    {
-        get => _interestName;
-        set => this.RaiseAndSetIfChanged(ref _interestName, value);
-    }
-
-    public IReadOnlyList<UserInterest> UserInterests
-    {
-        get => _userInterests;
-        set => this.RaiseAndSetIfChanged(ref _userInterests, value);
+        public Interest()
+        {
+            ProfileInterests = new HashSet<ProfileInterest>();
+        }
+        
+        public int Id { get; set; }
+        public required string InterestName { get; set; }
+        
+        // Navigation property
+        public ICollection<ProfileInterest> ProfileInterests { get; set; }
     }
 }

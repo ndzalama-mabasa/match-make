@@ -1,33 +1,18 @@
-﻿using System.Collections.Generic;
-using ReactiveUI;
+using System.Collections.Generic;
 
-public class Species : ReactiveObject
+namespace GalaxyMatchGUI.Models
 {
-    private int _id;
-    private string _speciesName;
-
-    private IReadOnlyList<Profile> _profiles;
-
-    public Species()
+    public class Species
     {
-        _profiles = new List<Profile>().AsReadOnly();
-    }
-
-    public int Id
-    {
-        get => _id;
-        set => this.RaiseAndSetIfChanged(ref _id, value);
-    }
-
-    public string SpeciesName
-    {
-        get => _speciesName;
-        set => this.RaiseAndSetIfChanged(ref _speciesName, value);
-    }
-
-    public IReadOnlyList<Profile> Profiles
-    {
-        get => _profiles;
-        set => this.RaiseAndSetIfChanged(ref _profiles, value);
+        public Species()
+        {
+            Profiles = new HashSet<Profile>();
+        }
+        
+        public int Id { get; set; }
+        public required string SpeciesName { get; set; }
+        
+        // Navigation property
+        public ICollection<Profile> Profiles { get; set; }
     }
 }
