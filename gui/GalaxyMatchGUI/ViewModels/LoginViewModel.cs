@@ -1,6 +1,7 @@
 ﻿using System.Reactive;
 using System.Threading.Tasks;
 using Avalonia.Controls.ApplicationLifetimes;
+using GalaxyMatchGUI.Services;
 using ReactiveUI;
 
 namespace GalaxyMatchGUI.ViewModels
@@ -38,8 +39,8 @@ namespace GalaxyMatchGUI.ViewModels
                 IsLoading = true;
                 StatusMessage = "Contacting galactic servers...";
 
-                // Simulate network delay
-                await Task.Delay(2000);
+                var authService = new AuthService();
+                await authService.StartLoginFlow();
 
                 // Simulate login success
                 StatusMessage = "Login successful! Navigating through the wormhole...";

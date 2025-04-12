@@ -2,6 +2,7 @@
 # Operating System Files #
 ##########################
 
+.vs/
 # OSX
 .DS_Store
 .AppleDouble
@@ -192,10 +193,8 @@ _pkginfo.txt
 secrets.json # Typically managed by User Secrets outside repo, but good to add just in case
 
 # Application configuration files that often contain sensitive information
-appsettings.Development.json
-appsettings.*.json
-!appsettings.json # Keep the base one
-!appsettings.Production.json # Often kept as a template
+api/appsettings.Development.json
+api/appsettings.json
 
 # Rider IDE specific files
 .idea/

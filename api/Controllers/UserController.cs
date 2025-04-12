@@ -1,5 +1,8 @@
-﻿using galaxy_match_make.Models;
+﻿using System.Security.Claims;
+using galaxy_match_make.Models;
 using galaxy_match_make.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace galaxy_match_make.Controllers
@@ -28,6 +31,14 @@ namespace galaxy_match_make.Controllers
                 return NotFound("This user does not exist");
             }
             return Ok(user);
+        }
+
+        [HttpGet("test")]
+        [Authorize]
+        public IActionResult UserOnly()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Ok(userId);
         }
     }
 }
