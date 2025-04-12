@@ -6,11 +6,11 @@ namespace galaxy_match_make.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class MessageController : ControllerBase
+public class MessagesController : ControllerBase
 {
     private readonly IMessageRepository _messageRepository;
 
-    public MessageController(IMessageRepository messageRepository)
+    public MessagesController(IMessageRepository messageRepository)
     {
         _messageRepository = messageRepository;
     }
