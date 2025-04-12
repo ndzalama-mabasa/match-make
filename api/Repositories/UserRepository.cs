@@ -26,6 +26,27 @@ namespace galaxy_match_make.Repositories
             return users.ToList();
         }
 
+        public async Task AddUser(string oauthId)
+        {
+            using var connection = GetConnection();
+            connection.Open();
+            await connection.ExecuteScalarAsync<Guid>(
+                @"INSERT INTO users (oauth_id) 
+                      VALUES (@OAuthId) 
+                      RETURNING id",
+                new { OAuthId = oauthId });
+            
+        }
+        
+        public async Task<UserDto> GetUserByOauthId(string oauthId)
+        {
+            using var connection = GetConnection();
+            return await connection.QueryFirstOrDefaultAsync<UserDto>(
+                "SELECT id, oauth_id AS OAuthId, inactive FROM users WHERE oauth_id = @OAuthId LIMIT 1",
+                new { OAuthId = oauthId });
+        }
+        
+
         async Task<UserDto> IUserRepository.GetUserById(Guid id)
         {
             using var connection = GetConnection();
@@ -35,12 +56,7 @@ namespace galaxy_match_make.Repositories
 
             return user;
         }
-
-        Task IUserRepository.AddUser(UserDto user)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         Task IUserRepository.DeleteUser(Guid id)
         {
             throw new NotImplementedException();
