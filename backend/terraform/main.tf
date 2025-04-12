@@ -14,13 +14,11 @@ terraform {
     bucket = "galaxy-terraform-prod-af-south-1"
     key    = "backend/terraform/galaxy-matchdb.tfstate"
     region = "af-south-1"
-    profile = "terraform-ci-user"
   }
 }
 
 provider "aws" {
   region = "af-south-1"
-  profile = "terraform-ci-user"
 }
 
 provider "postgresql" {
