@@ -211,4 +211,4 @@ api/appsettings.json
 !.vscode/tasks.json # Example: Keep shared tasks
 
 # Publish profiles user specific settings
-*.pubxml.user
+*.pubxml.user.terraform/
