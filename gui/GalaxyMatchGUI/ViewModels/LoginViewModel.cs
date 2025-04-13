@@ -51,12 +51,8 @@ namespace GalaxyMatchGUI.ViewModels
                     // User needs to complete their profile
                     StatusMessage = "Please complete your profile";
                     
-                    // TODO: Implement a profile creation view and navigate to it
-                    // For now, we'll still navigate to MatchingViewModel
-                    NavigationService?.NavigateTo<MatchingViewModel>();
-                    
-                    // Uncomment when ProfileViewModel is implemented:
-                    // NavigationService?.NavigateTo<ProfileViewModel>();
+                    // Navigate to profile creation/edit view
+                    NavigationService?.NavigateTo<ProfileViewModel>();
                 }
             }
             catch (Exception ex)
