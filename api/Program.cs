@@ -50,13 +50,13 @@ builder.Services.AddScoped<IGenderRepository, GenderRepository>();
 builder.Services.AddScoped<GoogleAuthService>();
 builder.Services.AddHttpClient();
 
-builder.Services.AddSingleton(sp =>
-{
-    var context = sp.GetRequiredService<DapperContext>();
-    return context.CreateConnection();
-});
+// Remove the following singleton registration that causes connection sharing
+// builder.Services.AddSingleton(sp =>
+// {
+//     var context = sp.GetRequiredService<DapperContext>();
+//     return context.CreateConnection();
+// });
 Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-
 
 var app = builder.Build();
 
