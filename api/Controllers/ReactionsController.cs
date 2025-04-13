@@ -1,6 +1,8 @@
 using galaxy_match_make.Models;
 using galaxy_match_make.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace galaxy_match_make.Controllers;
 
@@ -9,10 +11,12 @@ namespace galaxy_match_make.Controllers;
 public class ReactionsController : ControllerBase
 {
     private readonly IReactionRepository _reactionRepository;
+    private readonly IUserRepository _userRepository;
 
-    public ReactionsController(IReactionRepository reactionRepository)
+    public ReactionsController(IReactionRepository reactionRepository, IUserRepository userRepository)
     {
         _reactionRepository = reactionRepository;
+        _userRepository = userRepository;
     }
 
     [HttpGet]
@@ -33,9 +37,36 @@ public class ReactionsController : ControllerBase
         return Ok(reaction);
     }
 
+    [Authorize]
     [HttpPost]
-    public async Task<IActionResult> AddReaction([FromBody] ReactionDto reaction)
+    public async Task<IActionResult> AddReaction([FromBody] ReactionRequest request)
     {
+        var reactorIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
+        if (string.IsNullOrEmpty(reactorIdClaim) || !Guid.TryParse(reactorIdClaim, out Guid reactorId))
+        {
+            return Unauthorized("User ID not found in token or invalid format");
+        }
+
+        var reactor = await _userRepository.GetUserById(reactorId);
+        if (reactor == null)
+        {
+            return NotFound($"Reactor user with ID {reactorId} not found");
+        }
+
+        var target = await _userRepository.GetUserById(request.TargetId);
+        if (target == null)
+        {
+            return NotFound($"Target user with ID {request.TargetId} not found");
+        }
+
+        var reaction = new ReactionDto
+        {
+            ReactorId = reactorId,
+            TargetId = request.TargetId,
+            IsPositive = request.IsPositive
+        };
+        
         var existingReaction = await _reactionRepository.GetReactionByReactorAndTargetAsync(reaction.ReactorId, reaction.TargetId);
         if (existingReaction != null)
         {
@@ -73,4 +104,10 @@ public class ReactionsController : ControllerBase
         var reactions = await _reactionRepository.GetReactionsByReactorAsync(userId);
         return Ok(reactions);
     }
+}
+
+public class ReactionRequest
+{
+    public Guid TargetId { get; set; }
+    public bool IsPositive { get; set; }
 }

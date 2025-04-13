@@ -153,6 +153,7 @@ public class ProfileRepository : IProfileRepository
         var profileDictionary = new Dictionary<int, ProfileDto>();
         using var connection = GetConnection();
         var profiles = connection.Query<ProfileDto, SpeciesDto, PlanetDto, GenderDto, string, ProfileDto>(
+        var profiles = connection.Query<ProfileDto, SpeciesDto, PlanetDto, GenderDto, string, ProfileDto>(
                 sql,
                 (profile, species, planet, gender, userInterestsJson) =>
                 {
@@ -276,4 +277,5 @@ public class ProfileRepository : IProfileRepository
             (@UserId, @DisplayName, @Bio, @AvatarUrl, @SpeciesId, @PlanetId, @GenderId, @HeightInGalacticInches, @GalacticDateOfBirth)
             RETURNING id;";
     }
+
 }
