@@ -138,6 +138,12 @@ public class ProfileRepository : IProfileRepository
         }
     }
 
+    public async Task<IEnumerable<ProfileDto>> GetPendingLikesByUserId(Guid id)
+    {
+
+    }
+
+
     private async Task<IEnumerable<ProfileDto>> QueryProfiles(string sql, object? parameters = null)
     {
         var profileDictionary = new Dictionary<int, ProfileDto>();
@@ -191,7 +197,7 @@ public class ProfileRepository : IProfileRepository
 
         return profileDictionary.Values;
     }
-
+    
     private string GetProfileSql(bool withWhereClause)
     {
         var sql = @"
