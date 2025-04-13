@@ -36,11 +36,14 @@ namespace GalaxyMatchGUI.ViewModels
                     return;
                 }
 
+                Console.WriteLine($"JWT Token: {authResponse.JwtToken}");
+
                 // Check if the user's profile is complete
                 if (authResponse.ProfileComplete)
                 {
                     // User already has a profile, navigate to the matching view
                     StatusMessage = "Authentication successful!";
+
                     NavigationService?.NavigateTo<MatchingViewModel>();
                 }
                 else

@@ -90,7 +90,7 @@ public class ProfileRepository : IProfileRepository
         }
     }
 
-    public async Task<ProfileDto> CreateProfile(CreateProfileDto profile)
+    public async Task<ProfileDto> CreateProfile(Guid id, CreateProfileDto profile)
     {
         var sql = GetUpsertProfileSql(false);
 
@@ -102,7 +102,7 @@ public class ProfileRepository : IProfileRepository
         {
             var profileId = await connection.ExecuteScalarAsync<int>(sql, new
             {
-                UserId = profile.UserId,
+                UserId = id,
                 DisplayName = profile.DisplayName,
                 Bio = profile.Bio,
                 AvatarUrl = profile.AvatarUrl,
@@ -123,14 +123,14 @@ public class ProfileRepository : IProfileRepository
                 {
                     await connection.ExecuteAsync(insertInterestsSql, new
                     {
-                        UserId = profile.UserId,
+                        UserId = id,
                         InterestId = interestId
                     }, transaction);
                 }
             }
 
             await transaction.CommitAsync();
-            return await GetProfileById(profile.UserId);
+            return await GetProfileById(id);
         }
         catch
         {
@@ -165,7 +165,7 @@ public class ProfileRepository : IProfileRepository
                     return profile;
                 },
                 parameters,
-                splitOn: "id, id, id, user_interests"
+                splitOn: "id,id,id,user_interests"
                 );
 
         return profileDictionary.Values;
@@ -174,6 +174,24 @@ public class ProfileRepository : IProfileRepository
     private string GetProfileSql(bool withWhereClause)
     {
         var sql = @"
+            WITH profile_interests AS (
+                SELECT 
+                    p.user_id,
+                    CASE 
+                        WHEN COUNT(i.id) = 0 THEN NULL
+                        ELSE json_agg(
+                            json_build_object(
+                                'InterestId', i.id,
+                                'InterestName', i.interest_name
+                            )
+                        )
+                    END AS user_interests
+                FROM profiles p
+                LEFT JOIN user_interests ui ON p.user_id = ui.user_id
+                LEFT JOIN interests i ON ui.interest_id = i.id
+                GROUP BY p.user_id
+            )
+            
             SELECT 
                 p.id,
                 p.user_id,
@@ -192,25 +210,17 @@ public class ProfileRepository : IProfileRepository
                 g.id,
                 g.gender,
     
-                -- Aggregated interests
-                json_agg(
-                    json_build_object(
-                        'InterestId', i.id,
-                        'InterestName', i.interest_name
-                    )
-                ) AS user_interests
-
+                pi.user_interests
             FROM profiles p
             LEFT JOIN species s ON p.species_id = s.id
             LEFT JOIN planets pl ON p.planet_id = pl.id
             LEFT JOIN genders g ON p.gender_id = g.id
-            LEFT JOIN user_interests ui ON p.user_id = ui.user_id
-            LEFT JOIN interests i ON ui.interest_id = i.id";
+            LEFT JOIN profile_interests pi ON p.user_id = pi.user_id";
 
-            if (withWhereClause)
-            {
-                sql += " WHERE p.user_id = @Id ";
-            }
+        if (withWhereClause)
+        {
+            sql += " WHERE p.user_id = @Id ";
+        }
 
         return sql;
     }

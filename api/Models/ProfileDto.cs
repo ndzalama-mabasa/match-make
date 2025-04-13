@@ -34,7 +34,6 @@
 
     public class CreateProfileDto
     {
-        public Guid UserId { get; set; }
         public string DisplayName { get; set; } = null!;
         public string? Bio { get; set; }
         public string? AvatarUrl { get; set; }
