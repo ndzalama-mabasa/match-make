@@ -1,4 +1,5 @@
 using galaxy_match_make.Data;
+using galaxy_match_make.Models;
 using galaxy_match_make.Repositories;
 using galaxy_match_make.Services;
 
@@ -17,6 +18,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IReactionRepository, ReactionRepository>();
+
+builder.Services.AddScoped<IGenericRepository<CharacteristicsDto>, GenericRepository<CharacteristicsDto>>();
 
 builder.Services.AddScoped<GoogleAuthService>();
 builder.Services.AddHttpClient();
