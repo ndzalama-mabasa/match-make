@@ -224,7 +224,7 @@ namespace GalaxyMatchGUI.ViewModels
         {
             try
             {
-                var response = await _httpClient.GetAsync($"{ApiBaseUrl}/api/Genders");
+                var response = await _httpClient.GetAsync($"{ApiBaseUrl}/api/Gender");
                 if (response.IsSuccessStatusCode)
                 {
                     var genders = await response.Content.ReadFromJsonAsync<List<Gender>>();

@@ -44,6 +44,8 @@ builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IReactionRepository, ReactionRepository>();
 builder.Services.AddScoped<IInterestRepository, InterestRepository>();
+builder.Services.AddScoped<ISpeciesRepository, SpeciesRepository>();
+builder.Services.AddScoped<IGenderRepository, GenderRepository>();
 
 builder.Services.AddScoped<GoogleAuthService>();
 builder.Services.AddHttpClient();
