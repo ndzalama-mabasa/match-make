@@ -152,7 +152,7 @@ public class ProfileRepository : IProfileRepository
     {
         var profileDictionary = new Dictionary<int, ProfileDto>();
         using var connection = GetConnection();
-        var profiles = connection.Query<ProfileDto, SpeciesDto, PlanetDto, GenderDto, string, ProfileDto>(
+        
         var profiles = connection.Query<ProfileDto, SpeciesDto, PlanetDto, GenderDto, string, ProfileDto>(
                 sql,
                 (profile, species, planet, gender, userInterestsJson) =>
@@ -216,7 +216,7 @@ public class ProfileRepository : IProfileRepository
             if (pendingLikesClause)
             {
                 sql += @"FROM reactions r
-                          LEFT JOIN profiles p ON r.reactor_id = p.user_id";
+                          JOIN profiles p ON r.reactor_id = p.user_id ";
             } else
             {
                 sql += @" FROM profiles p ";

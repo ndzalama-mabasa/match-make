@@ -21,7 +21,7 @@ namespace galaxy_match_make.Controllers
             return Ok(Profiles);
         }
 
-        [HttpGet("pending-likes")]
+        [HttpGet("{id}/pending-likes")]
         public async Task<ActionResult<List<ProfileDto>>> GetPendingMatchesByUserId(Guid id)
         {
             var Profiles = await _profileRepository.GetPendingMatchesByUserId(id);
