@@ -43,7 +43,7 @@ public class ProfileRepository : IProfileRepository
         var sql = GetUpsertProfileSql(true);
 
         using var connection = GetConnection();
-        await connection.OpenAsync(); 
+        await connection.OpenAsync();
         using var transaction = await connection.BeginTransactionAsync();
 
         try
@@ -81,7 +81,7 @@ public class ProfileRepository : IProfileRepository
             }
 
             await transaction.CommitAsync();
-            return await GetProfileById(id); 
+            return await GetProfileById(id);
         }
         catch
         {
@@ -95,8 +95,8 @@ public class ProfileRepository : IProfileRepository
         var sql = GetUpsertProfileSql(false);
 
         using var connection = GetConnection();
-        await connection.OpenAsync(); 
-        using var transaction = await connection.BeginTransactionAsync(); 
+        await connection.OpenAsync();
+        using var transaction = await connection.BeginTransactionAsync();
 
         try
         {
@@ -183,6 +183,26 @@ public class ProfileRepository : IProfileRepository
             );
 
         return profileDictionary.Values;
+    }
+
+    public async Task<IEnumerable<MatchedProfileDto>> GetUserMatchedProfiles(Guid UserId)
+    {
+        var query = @"
+            SELECT p.user_id, p.display_name, avatar_url
+            FROM profiles p
+            INNER JOIN reactions r1 ON r1.target_id = p.user_id
+            WHERE r1.reactor_id = @UserId
+              AND r1.is_positive = true                     
+              AND EXISTS (                                  
+                  SELECT *                                  
+                  FROM reactions r2
+                  WHERE r2.reactor_id = r1.target_id        
+                    AND r2.target_id = r1.reactor_id        
+                    AND r2.is_positive = true
+              );";
+
+        using var connection = GetConnection();
+        return await connection.QueryAsync<MatchedProfileDto>(query, new { UserId });
     }
 
     private string GetProfileSql(bool withWhereClause, bool pendingLikesClause)

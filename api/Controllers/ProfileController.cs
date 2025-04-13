@@ -1,8 +1,10 @@
 ﻿using galaxy_match_make.Models;
 using galaxy_match_make.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace galaxy_match_make.Controllers
 {
@@ -71,6 +73,30 @@ namespace galaxy_match_make.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error creating profile: {ex.Message}");
+            }
+        }
+
+        [Authorize]
+        [HttpGet("matched")]
+        public async Task<ActionResult<List<MatchedProfileDto>>> GetUserMatchedProfilesFromToken()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
+            {
+                return Unauthorized("You are not authorized to access this resource.");
+            }
+            else
+            {
+                var matchedProfiles = await _profileRepository.GetUserMatchedProfiles(userId);
+
+                if (matchedProfiles == null)
+                {
+                    return NotFound("No matched profiles found.");
+                }
+                else
+                {
+                    return Ok(matchedProfiles);
+                }
             }
         }
     }
