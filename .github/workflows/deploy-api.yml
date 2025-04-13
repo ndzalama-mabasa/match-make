@@ -57,7 +57,7 @@ jobs:
       - name: Build, tag and push image to ecr
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: ${{ vars.ECR_REPOSITORY_NAME }} 
+          REPOSITORY: csharp-levelup-repo
           IMAGE_TAG: ${{ github.sha }}
         run: |-
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
@@ -65,7 +65,7 @@ jobs:
 
       - name: Deploy to EC2
         env:
-          REPOSITORY: ${{ vars.ECR_REPOSITORY_NAME }}
+          REPOSITORY: csharp-levelup-repo
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
           EC2_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}

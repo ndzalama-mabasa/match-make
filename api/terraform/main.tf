@@ -6,7 +6,7 @@ resource "aws_iam_role" "github_actions" {
       {
         Effect = "Allow"
         Principal = {
-          Federated = coalesce(aws_iam_openid_connect_provider.github.arn, var.oidc_provider_arn)
+          Federated = coalesce(aws_iam_openid_connect_provider.github[0].arn, var.oidc_provider_arn)
         }
         Action = "sts:AssumeRoleWithWebIdentity"
         Condition = {
@@ -30,7 +30,7 @@ resource "aws_iam_role" "github_actions" {
 resource "aws_iam_policy_attachment" "github_actions_policy_attachment" {
   name       = "CSharpLevelUpActionsPolicyAttachment"
   roles      = [aws_iam_role.github_actions.name]
-  policy_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/EC2InstanceProfileForImageBuilderECRContainerBuilds"
+  policy_arn = "arn:aws:iam::aws:policy/EC2InstanceProfileForImageBuilderECRContainerBuilds"
 }
 
 resource "aws_iam_openid_connect_provider" "github" {
@@ -119,7 +119,7 @@ resource "aws_key_pair" "csharp_levelup_key" {
 
 resource "aws_instance" "csharp_levelup_instance" {
   ami                    = data.aws_ami.amazon_linux_latest.id
-  instance_type          = "t2.micro"
+  instance_type          = "t3.micro"
   key_name               = aws_key_pair.csharp_levelup_key.key_name
   vpc_security_group_ids = [aws_security_group.csharp_levelup_sg.id]
   subnet_id              = aws_subnet.csharp_levelup_subnet.id
@@ -171,7 +171,7 @@ resource "aws_iam_role" "csharp_levelup_instance_role" {
 
 resource "aws_iam_role_policy_attachment" "csharp_levelup_instance_role_policy_attachment" {
   role       = aws_iam_role.csharp_levelup_instance_role.name
-  policy_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/EC2InstanceProfileForCSharpLevelUpECRContainerBuilds"
+  policy_arn = "arn:aws:iam::aws:policy/EC2InstanceProfileForImageBuilderECRContainerBuilds"
 }
 
 resource "aws_iam_instance_profile" "csharp_levelup_instance_profile" {
