@@ -52,6 +52,7 @@ public partial class App : Application
             navigationService.RegisterView<LoginViewModel, LoginView>();
             navigationService.RegisterView<MatchingViewModel, MatchingView>();
             navigationService.RegisterView<ContactsListViewModel, ContactsListView>();
+            navigationService.RegisterView<MessageRoomViewModel, MessageRoomView>();
             navigationService.RegisterView<ProfileViewModel, ProfileView>();
             
             // Register navigation service in DI container
@@ -61,7 +62,7 @@ public partial class App : Application
             ServiceProvider = services.BuildServiceProvider();
             
             // Navigate to login view
-            navigationService.NavigateTo<LoginViewModel>();
+            navigationService.NavigateTo<MatchingViewModel>();
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -74,6 +75,7 @@ public partial class App : Application
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<MatchingViewModel>();
         services.AddTransient<ContactsListViewModel>();
+        services.AddTransient<MessageRoomViewModel>();
         services.AddTransient<ProfileViewModel>();
         
     }
