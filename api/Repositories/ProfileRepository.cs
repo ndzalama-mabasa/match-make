@@ -11,22 +11,17 @@ namespace galaxy_match_make.Repositories;
 
 public class ProfileRepository : IProfileRepository
 {
-    private readonly IConfiguration _configuration;
+    private readonly DapperContext _context;
 
-    public ProfileRepository(IConfiguration configuration)
+    public ProfileRepository(DapperContext context)
     {
-        _configuration = configuration;
-    }
-    private NpgsqlConnection GetConnection()
-    {
-        return new NpgsqlConnection(_configuration
-            .GetConnectionString("DefaultConnection"));
+        _context = context;
     }
 
     public async Task<IEnumerable<ProfileDto>> GetAllProfiles()
     {
-        var sql =GetProfileSql(false, false);
-        var profiles = await QueryProfiles(sql, false);
+        var sql = GetProfileSql(false, false);
+        var profiles = await QueryProfiles(sql, null);
         return profiles;
     }
 
@@ -42,7 +37,7 @@ public class ProfileRepository : IProfileRepository
     {
         var sql = GetUpsertProfileSql(true);
 
-        using var connection = GetConnection();
+        using var connection = _context.CreateConnection();
         await connection.OpenAsync(); 
         using var transaction = await connection.BeginTransactionAsync();
 
@@ -94,7 +89,7 @@ public class ProfileRepository : IProfileRepository
     {
         var sql = GetUpsertProfileSql(false);
 
-        using var connection = GetConnection();
+        using var connection = _context.CreateConnection();
         await connection.OpenAsync(); 
         using var transaction = await connection.BeginTransactionAsync(); 
 
@@ -147,17 +142,17 @@ public class ProfileRepository : IProfileRepository
         return pendingMatches;
     }
 
-
+    // Fixed the async method to actually use await
     private async Task<IEnumerable<ProfileDto>> QueryProfiles(string sql, object? parameters = null)
     {
         var profileDictionary = new Dictionary<int, ProfileDto>();
-        using var connection = GetConnection();
+        using var connection = _context.CreateConnection();
         
-        var profiles = connection.Query<ProfileDto, SpeciesDto, PlanetDto, GenderDto, string, ProfileDto>(
+        // Use QueryAsync instead of Query to make this truly asynchronous
+        var profiles = await connection.QueryAsync<ProfileDto, SpeciesDto, PlanetDto, GenderDto, string, ProfileDto>(
                 sql,
                 (profile, species, planet, gender, userInterestsJson) =>
                 {
-
                     profile.Species = species;
                     profile.Planet = planet;
                     profile.Gender = gender;
@@ -184,7 +179,8 @@ public class ProfileRepository : IProfileRepository
 
         return profileDictionary.Values;
     }
-
+    
+    // ... rest of the class remains unchanged
     private string GetProfileSql(bool withWhereClause, bool pendingLikesClause)
     {
         var sql = @"
@@ -295,5 +291,5 @@ public class ProfileRepository : IProfileRepository
             (@UserId, @DisplayName, @Bio, @AvatarUrl, @SpeciesId, @PlanetId, @GenderId, @HeightInGalacticInches, @GalacticDateOfBirth)
             RETURNING id;";
     }
-
+    
 }

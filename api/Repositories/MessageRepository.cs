@@ -71,10 +71,10 @@ public class MessageRepository : IMessageRepository
                 END
             WHERE 
                 m.sender_id = @UserId OR m.recipient_id = @UserId";
-    
-        var allMessages = await _dbConnection.QueryAsync<ContactDto>(query, new { UserId = userId });
-    
+        
+        using var connection = _context.CreateConnection();
+        var allMessages = await connection.QueryAsync<ContactDto>(query, new { UserId = userId });
+        
         return allMessages.ToList();
     }
-
 }
