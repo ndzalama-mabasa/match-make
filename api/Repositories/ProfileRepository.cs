@@ -25,14 +25,14 @@ public class ProfileRepository : IProfileRepository
 
     public async Task<IEnumerable<ProfileDto>> GetAllProfiles()
     {
-        var sql =GetProfileSql(false);
+        var sql =GetProfileSql(false, false);
         var profiles = await QueryProfiles(sql, false);
         return profiles;
     }
 
     public async Task<ProfileDto> GetProfileById(Guid id)
     {
-        var sql = GetProfileSql(true);
+        var sql = GetProfileSql(true, false);
         var profile = await QueryProfiles(sql, new { Id = id});
 
         return profile.FirstOrDefault();
@@ -139,17 +139,32 @@ public class ProfileRepository : IProfileRepository
         }
     }
 
+    public async Task<IEnumerable<ProfileDto>> GetPendingMatchesByUserId(Guid id)
+    {
+        var sql = GetProfileSql(false, true);
+        var pendingMatches = await QueryProfiles(sql, new { Id = id });
+
+        return pendingMatches;
+    }
+
+
     private async Task<IEnumerable<ProfileDto>> QueryProfiles(string sql, object? parameters = null)
     {
         var profileDictionary = new Dictionary<int, ProfileDto>();
         using var connection = GetConnection();
+        
         var profiles = connection.Query<ProfileDto, SpeciesDto, PlanetDto, GenderDto, string, ProfileDto>(
                 sql,
                 (profile, species, planet, gender, userInterestsJson) =>
                 {
+
                     profile.Species = species;
                     profile.Planet = planet;
                     profile.Gender = gender;
+
+                    // Initialize UserInterests if it's null
+                    if (profile.UserInterests == null)
+                        profile.UserInterests = new List<UserInterestsDto>();
 
                     if (!string.IsNullOrEmpty(userInterestsJson))
                     {
@@ -161,17 +176,16 @@ public class ProfileRepository : IProfileRepository
                     }
 
                     profileDictionary[profile.Id] = profile;
-
                     return profile;
                 },
                 parameters,
-                splitOn: "id,id,id,user_interests"
-                );
+                splitOn: "id, id, id, user_interests"
+            );
 
         return profileDictionary.Values;
     }
 
-    private string GetProfileSql(bool withWhereClause)
+    private string GetProfileSql(bool withWhereClause, bool pendingLikesClause)
     {
         var sql = @"
             WITH profile_interests AS (
@@ -210,17 +224,53 @@ public class ProfileRepository : IProfileRepository
                 g.id,
                 g.gender,
     
-                pi.user_interests
-            FROM profiles p
-            LEFT JOIN species s ON p.species_id = s.id
-            LEFT JOIN planets pl ON p.planet_id = pl.id
-            LEFT JOIN genders g ON p.gender_id = g.id
-            LEFT JOIN profile_interests pi ON p.user_id = pi.user_id";
+                -- Aggregated interests
+                json_agg(
+                    jsonb_build_object(
+                        'InterestId', i.id,
+                        'InterestName', i.interest_name
+                    )
+                ) FILTER (WHERE i.id IS NOT NULL) AS user_interests ";
+            if (pendingLikesClause)
+            {
+                sql += @"FROM reactions r
+                          JOIN profiles p ON r.reactor_id = p.user_id ";
+            } else
+            {
+                sql += @" FROM profiles p ";
+            }
+
+            sql += @"
+                LEFT JOIN species s ON p.species_id = s.id
+                LEFT JOIN planets pl ON p.planet_id = pl.id
+                LEFT JOIN genders g ON p.gender_id = g.id
+                LEFT JOIN user_interests ui ON p.user_id = ui.user_id
+                LEFT JOIN interests i ON ui.interest_id = i.id";
+
+       if (pendingLikesClause)
+        {
+            sql += @"
+                 LEFT JOIN reactions r2 
+                    ON r2.reactor_id = @Id 
+                    AND r2.target_id = r.reactor_id
+
+                WHERE r.target_id = @Id
+                  AND r.is_positive = TRUE
+                  AND r2.id IS NULL";
+        }
 
         if (withWhereClause)
         {
             sql += " WHERE p.user_id = @Id ";
         }
+
+        sql += @"
+            GROUP BY 
+            p.id, p.user_id, p.display_name, p.bio, p.avatar_url, 
+            p.height_in_galactic_inches, p.galactic_date_of_birth,
+            s.id, s.species_name,
+            pl.id, pl.planet_name,
+            g.id, g.gender;";
 
         return sql;
     }
