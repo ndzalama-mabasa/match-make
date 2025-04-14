@@ -1,5 +1,6 @@
 ﻿using galaxy_match_make.Models;
 using galaxy_match_make.Repositories;
+using galaxy_match_make.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -11,8 +12,13 @@ namespace galaxy_match_make.Controllers
     public class ProfileController : ControllerBase
     {
         private readonly IProfileRepository _profileRepository;
+        private readonly IProfileService _profileService;
 
-        public ProfileController(IProfileRepository profileRepository) => _profileRepository = profileRepository;
+        public ProfileController(IProfileRepository profileRepository, IProfileService profileService)
+        {
+            _profileRepository = profileRepository;
+            _profileService = profileService;
+        }
 
         [HttpGet]
         public async Task<ActionResult<List<ProfileDto>>> GetAllProfiles()
@@ -72,6 +78,12 @@ namespace galaxy_match_make.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error creating profile: {ex.Message}");
             }
+        }
+        
+        [HttpGet("{profileId}/preferred_profiles")]
+        public async Task<ActionResult<IEnumerable<ProfileDto>>> GetPreferredProfiles(int profileId)
+        {
+            return Ok(await _profileService.GetPreferredProfiles(profileId));
         }
     }
 }

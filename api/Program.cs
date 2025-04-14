@@ -23,6 +23,10 @@ builder.Services.AddScoped<IGenericRepository<CharacteristicsDto>, GenericReposi
 builder.Services.AddScoped<IGenericRepository<ProfileAttributesDto>, GenericRepository<ProfileAttributesDto>>();
 builder.Services.AddScoped<IGenericRepository<ProfilePreferencesDto>, GenericRepository<ProfilePreferencesDto>>();
 
+builder.Services.AddScoped<IGenericRepository<ProfileDto>, GenericRepository<ProfileDto>>();
+builder.Services.AddScoped<IGenericService<ProfileDto>, GenericService<ProfileDto>>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
+
 builder.Services.AddScoped<GoogleAuthService>();
 builder.Services.AddHttpClient();
 

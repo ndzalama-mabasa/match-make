@@ -6,6 +6,6 @@ namespace galaxy_match_make.Models;
 public class ProfilePreferencesDto
 {
     public int Id { get; set; }
-    public string ProfileId { get; set; } = null!;
-    public string CharacteristicId { get; set; } = null!;
+    public int ProfileId { get; set; }
+    public int CharacteristicId { get; set; }
 }
