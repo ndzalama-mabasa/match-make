@@ -34,10 +34,10 @@ namespace galaxy_match_make.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<CharacteristicsDto>> UpdateCharacteristics(CharacteristicsDto characteristics)
+        public async Task<ActionResult<CharacteristicsDto>> UpdateCharacteristics(int id, CharacteristicsDto characteristics)
         {
-            return await characteristicsRepository.GetByIdAsync(characteristics.Id) is null
-                 ? BadRequest($"Characteristic with id {characteristics.Id} does not exist")
+            return await characteristicsRepository.GetByIdAsync(id) is null
+                 ? BadRequest($"Characteristic with id {id} does not exist")
                  : Ok(await characteristicsRepository.UpdateAsync(characteristics));
         }
     }

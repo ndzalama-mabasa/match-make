@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Dapper;
 using Npgsql;
 
@@ -25,6 +26,17 @@ public class GenericRepository<T>: IGenericRepository<T> where T : class
     {
         return new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection"));
     }
+    
+    private string GetColumnNameFromProperty(string propertyName)
+    {
+        if (string.IsNullOrEmpty(propertyName))
+        {
+            return propertyName;
+        }
+
+        var pattern = @"(?<=[a-z0-9])(?=[A-Z])";
+        return Regex.Replace(propertyName, pattern, "_").ToLowerInvariant();
+    }
 
     public async Task<IEnumerable<T>> GetAllAsync()
     {
@@ -49,10 +61,13 @@ public class GenericRepository<T>: IGenericRepository<T> where T : class
             .Where(p => p.Name != _primaryKeyName)
             .ToList();
         
-        string columns = string.Join(", ", properties.Select(p => p.Name));
-        string parameters = string.Join(", @", properties.Select(p => p.GetValue(entity)));
+        string columns = string.Join(", ", properties.Select(p => GetColumnNameFromProperty(p.Name)));
+        string parameters = string.Join(", ", properties.Select(p => 
+            p.PropertyType == typeof(string)
+                ? $"'@{p.GetValue(entity)}'"
+                : $"@{p.GetValue(entity)}"));
         
-        string sql = $"INSERT INTO {_tableName} ({columns}) VALUES (@{parameters}) RETURNING {_primaryKeyName};";
+        string sql = $"INSERT INTO {_tableName} ({columns}) VALUES ({parameters}) RETURNING {_primaryKeyName};";
         
         return await connection.ExecuteScalarAsync<int>(sql, entity);
     }
@@ -64,8 +79,17 @@ public class GenericRepository<T>: IGenericRepository<T> where T : class
         List<PropertyInfo> properties = typeof(T).GetProperties()
             .Where(p => p.Name != _primaryKeyName)
             .ToList();
-        
-        string setClauses = string.Join(", ", properties.Select(p => $"{p.Name} = @{p.GetValue(entity)}"));
+
+        string setClauses = string.Join(", ", properties.Select(p =>
+        {
+            string columnName = GetColumnNameFromProperty(p.Name);
+            string columnValue = p.PropertyType == typeof(string)
+                ? $"'@{p.GetValue(entity)}'"
+                : $"@{p.GetValue(entity)}";
+
+            return $"{columnName} = {columnValue}";
+        }));
+            
 
         PropertyInfo primaryKeyPropertyInfo = typeof(T).GetProperty(_primaryKeyName) ?? 
             throw new ArgumentException($"Unable to update entity  '{typeof(T).Name}' because it doesn't have a primary key property named '{_primaryKeyName}'");
