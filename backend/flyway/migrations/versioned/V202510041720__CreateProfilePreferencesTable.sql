@@ -1,4 +1,4 @@
-CREATE TABLE profile_preferences (
+CREATE TABLE IF NOT EXISTS  profile_preferences (
     id SERIAL PRIMARY KEY NOT NULL,
     profile_id SERIAL NOT NULL,
     characteristic_id SERIAL NOT NULL,
