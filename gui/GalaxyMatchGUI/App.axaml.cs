@@ -10,6 +10,7 @@ using GalaxyMatchGUI.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using Avalonia.Media.Imaging;
+using GalaxyMatchGUI.Models;
 
 namespace GalaxyMatchGUI;
 
@@ -50,6 +51,8 @@ public partial class App : Application
             // Register views with navigation service
             navigationService.RegisterView<LoginViewModel, LoginView>();
             navigationService.RegisterView<MatchingViewModel, MatchingView>();
+            navigationService.RegisterView<ContactsListViewModel, ContactsListView>();
+            navigationService.RegisterView<ProfileViewModel, ProfileView>();
             
             // Register navigation service in DI container
             services.AddSingleton<INavigationService>(navigationService);
@@ -70,8 +73,9 @@ public partial class App : Application
         services.AddTransient<LoginViewModel>();
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<MatchingViewModel>();
+        services.AddTransient<ContactsListViewModel>();
+        services.AddTransient<ProfileViewModel>();
         
-        // Register other services here
     }
 
     private void DisableAvaloniaDataAnnotationValidation()

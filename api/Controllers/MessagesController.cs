@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using galaxy_match_make.Models;
 using galaxy_match_make.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace galaxy_match_make.Controllers;
@@ -66,4 +68,22 @@ public class MessagesController : ControllerBase
 
         return Ok(messages);
     }
+
+    [HttpGet("contacts")]
+    [Authorize]
+    public async Task<IActionResult> GetChats()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var chats = await _messageRepository.GetChatsByUserIdAsync(Guid.Parse(userId));
+
+        if (chats == null)
+        {
+            return Ok(new List<ContactDto>());
+        }
+        else
+        {
+            return Ok(chats);
+        }
+    }
+
 }

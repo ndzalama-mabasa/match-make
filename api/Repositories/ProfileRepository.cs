@@ -11,28 +11,23 @@ namespace galaxy_match_make.Repositories;
 
 public class ProfileRepository : IProfileRepository
 {
-    private readonly IConfiguration _configuration;
+    private readonly DapperContext _context;
 
-    public ProfileRepository(IConfiguration configuration)
+    public ProfileRepository(DapperContext context)
     {
-        _configuration = configuration;
-    }
-    private NpgsqlConnection GetConnection()
-    {
-        return new NpgsqlConnection(_configuration
-            .GetConnectionString("DefaultConnection"));
+        _context = context;
     }
 
     public async Task<IEnumerable<ProfileDto>> GetAllProfiles()
     {
-        var sql =GetProfileSql(false);
-        var profiles = await QueryProfiles(sql, false);
+        var sql = GetProfileSql(false, false);
+        var profiles = await QueryProfiles(sql, null);
         return profiles;
     }
 
     public async Task<ProfileDto> GetProfileById(Guid id)
     {
-        var sql = GetProfileSql(true);
+        var sql = GetProfileSql(true, false);
         var profile = await QueryProfiles(sql, new { Id = id});
 
         return profile.FirstOrDefault();
@@ -42,8 +37,10 @@ public class ProfileRepository : IProfileRepository
     {
         var sql = GetUpsertProfileSql(true);
 
-        using var connection = GetConnection();
+
+        using var connection = _context.CreateConnection();
         await connection.OpenAsync(); 
+
         using var transaction = await connection.BeginTransactionAsync();
 
         try
@@ -81,7 +78,7 @@ public class ProfileRepository : IProfileRepository
             }
 
             await transaction.CommitAsync();
-            return await GetProfileById(id); 
+            return await GetProfileById(id);
         }
         catch
         {
@@ -90,11 +87,11 @@ public class ProfileRepository : IProfileRepository
         }
     }
 
-    public async Task<ProfileDto> CreateProfile(CreateProfileDto profile)
+    public async Task<ProfileDto> CreateProfile(Guid id, CreateProfileDto profile)
     {
         var sql = GetUpsertProfileSql(false);
 
-        using var connection = GetConnection();
+        using var connection = _context.CreateConnection();
         await connection.OpenAsync(); 
         using var transaction = await connection.BeginTransactionAsync(); 
 
@@ -102,7 +99,7 @@ public class ProfileRepository : IProfileRepository
         {
             var profileId = await connection.ExecuteScalarAsync<int>(sql, new
             {
-                UserId = profile.UserId,
+                UserId = id,
                 DisplayName = profile.DisplayName,
                 Bio = profile.Bio,
                 AvatarUrl = profile.AvatarUrl,
@@ -123,14 +120,14 @@ public class ProfileRepository : IProfileRepository
                 {
                     await connection.ExecuteAsync(insertInterestsSql, new
                     {
-                        UserId = profile.UserId,
+                        UserId = id,
                         InterestId = interestId
                     }, transaction);
                 }
             }
 
             await transaction.CommitAsync();
-            return await GetProfileById(profile.UserId);
+            return await GetProfileById(id);
         }
         catch
         {
@@ -139,17 +136,32 @@ public class ProfileRepository : IProfileRepository
         }
     }
 
+    public async Task<IEnumerable<ProfileDto>> GetPendingMatchesByUserId(Guid id)
+    {
+        var sql = GetProfileSql(false, true);
+        var pendingMatches = await QueryProfiles(sql, new { Id = id });
+
+        return pendingMatches;
+    }
+
+    // Fixed the async method to actually use await
     private async Task<IEnumerable<ProfileDto>> QueryProfiles(string sql, object? parameters = null)
     {
         var profileDictionary = new Dictionary<int, ProfileDto>();
-        using var connection = GetConnection();
-        var profiles = connection.Query<ProfileDto, SpeciesDto, PlanetDto, GenderDto, string, ProfileDto>(
+        using var connection = _context.CreateConnection();
+        
+        // Use QueryAsync instead of Query to make this truly asynchronous
+        var profiles = await connection.QueryAsync<ProfileDto, SpeciesDto, PlanetDto, GenderDto, string, ProfileDto>(
                 sql,
                 (profile, species, planet, gender, userInterestsJson) =>
                 {
                     profile.Species = species;
                     profile.Planet = planet;
                     profile.Gender = gender;
+
+                    // Initialize UserInterests if it's null
+                    if (profile.UserInterests == null)
+                        profile.UserInterests = new List<UserInterestsDto>();
 
                     if (!string.IsNullOrEmpty(userInterestsJson))
                     {
@@ -161,19 +173,57 @@ public class ProfileRepository : IProfileRepository
                     }
 
                     profileDictionary[profile.Id] = profile;
-
                     return profile;
                 },
                 parameters,
                 splitOn: "id, id, id, user_interests"
-                );
+            );
 
         return profileDictionary.Values;
     }
 
-    private string GetProfileSql(bool withWhereClause)
+
+    public async Task<IEnumerable<MatchedProfileDto>> GetUserMatchedProfiles(Guid UserId)
+    {
+        var query = @"
+            SELECT p.user_id, p.display_name, avatar_url
+            FROM profiles p
+            INNER JOIN reactions r1 ON r1.target_id = p.user_id
+            WHERE r1.reactor_id = @UserId
+              AND r1.is_positive = true                     
+              AND EXISTS (                                  
+                  SELECT *                                  
+                  FROM reactions r2
+                  WHERE r2.reactor_id = r1.target_id        
+                    AND r2.target_id = r1.reactor_id        
+                    AND r2.is_positive = true
+              );";
+
+        using var connection = GetConnection();
+        return await connection.QueryAsync<MatchedProfileDto>(query, new { UserId });
+    }
+
+    private string GetProfileSql(bool withWhereClause, bool pendingLikesClause)
     {
         var sql = @"
+            WITH profile_interests AS (
+                SELECT 
+                    p.user_id,
+                    CASE 
+                        WHEN COUNT(i.id) = 0 THEN NULL
+                        ELSE json_agg(
+                            json_build_object(
+                                'InterestId', i.id,
+                                'InterestName', i.interest_name
+                            )
+                        )
+                    END AS user_interests
+                FROM profiles p
+                LEFT JOIN user_interests ui ON p.user_id = ui.user_id
+                LEFT JOIN interests i ON ui.interest_id = i.id
+                GROUP BY p.user_id
+            )
+            
             SELECT 
                 p.id,
                 p.user_id,
@@ -194,23 +244,51 @@ public class ProfileRepository : IProfileRepository
     
                 -- Aggregated interests
                 json_agg(
-                    json_build_object(
+                    jsonb_build_object(
                         'InterestId', i.id,
                         'InterestName', i.interest_name
                     )
-                ) AS user_interests
-
-            FROM profiles p
-            LEFT JOIN species s ON p.species_id = s.id
-            LEFT JOIN planets pl ON p.planet_id = pl.id
-            LEFT JOIN genders g ON p.gender_id = g.id
-            LEFT JOIN user_interests ui ON p.user_id = ui.user_id
-            LEFT JOIN interests i ON ui.interest_id = i.id";
-
-            if (withWhereClause)
+                ) FILTER (WHERE i.id IS NOT NULL) AS user_interests ";
+            if (pendingLikesClause)
             {
-                sql += " WHERE p.user_id = @Id ";
+                sql += @"FROM reactions r
+                          JOIN profiles p ON r.reactor_id = p.user_id ";
+            } else
+            {
+                sql += @" FROM profiles p ";
             }
+
+            sql += @"
+                LEFT JOIN species s ON p.species_id = s.id
+                LEFT JOIN planets pl ON p.planet_id = pl.id
+                LEFT JOIN genders g ON p.gender_id = g.id
+                LEFT JOIN user_interests ui ON p.user_id = ui.user_id
+                LEFT JOIN interests i ON ui.interest_id = i.id";
+
+       if (pendingLikesClause)
+        {
+            sql += @"
+                 LEFT JOIN reactions r2 
+                    ON r2.reactor_id = @Id 
+                    AND r2.target_id = r.reactor_id
+
+                WHERE r.target_id = @Id
+                  AND r.is_positive = TRUE
+                  AND r2.id IS NULL";
+        }
+
+        if (withWhereClause)
+        {
+            sql += " WHERE p.user_id = @Id ";
+        }
+
+        sql += @"
+            GROUP BY 
+            p.id, p.user_id, p.display_name, p.bio, p.avatar_url, 
+            p.height_in_galactic_inches, p.galactic_date_of_birth,
+            s.id, s.species_name,
+            pl.id, pl.planet_name,
+            g.id, g.gender;";
 
         return sql;
     }
@@ -235,5 +313,5 @@ public class ProfileRepository : IProfileRepository
             (@UserId, @DisplayName, @Bio, @AvatarUrl, @SpeciesId, @PlanetId, @GenderId, @HeightInGalacticInches, @GalacticDateOfBirth)
             RETURNING id;";
     }
-
+    
 }
