@@ -53,6 +53,23 @@ public class GenericRepository<T>: IGenericRepository<T> where T : class
             new { Id = id });
     }
 
+    public async Task<IEnumerable<T>> GetByColumnValueAsync(string columnName, object columnValue)
+    {
+        if (string.IsNullOrEmpty(columnName))
+        {
+            return [];
+        }
+    
+        await using NpgsqlConnection connection = GetConnection();
+        
+        columnValue = columnValue.GetType() == typeof(string) 
+            ? $"'{columnValue}'"
+            : columnValue;
+        
+        return await connection.QueryAsync<T>($"SELECT * FROM {_tableName} WHERE {columnName} = @ColumnValue",
+            new { ColumnValue = columnValue });
+    }
+
     public async Task<int> CreateAsync(T entity)
     {
         await using NpgsqlConnection connection = GetConnection();

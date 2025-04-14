@@ -20,6 +20,8 @@ builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IReactionRepository, ReactionRepository>();
 
 builder.Services.AddScoped<IGenericRepository<CharacteristicsDto>, GenericRepository<CharacteristicsDto>>();
+builder.Services.AddScoped<IGenericRepository<ProfileAttributesDto>, GenericRepository<ProfileAttributesDto>>();
+builder.Services.AddScoped<IGenericRepository<ProfilePreferencesDto>, GenericRepository<ProfilePreferencesDto>>();
 
 builder.Services.AddScoped<GoogleAuthService>();
 builder.Services.AddHttpClient();
