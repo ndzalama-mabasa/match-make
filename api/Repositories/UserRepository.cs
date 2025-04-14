@@ -3,6 +3,7 @@ using galaxy_match_make.Data;
 using galaxy_match_make.Models;
 using Npgsql;
 
+
 namespace galaxy_match_make.Repositories
 {
     public class UserRepository : IUserRepository
@@ -24,7 +25,6 @@ namespace galaxy_match_make.Repositories
         public async Task AddUser(string oauthId)
         {
             using var connection = _context.CreateConnection();
-            await connection.OpenAsync();
             await connection.ExecuteScalarAsync<Guid>(
                 @"INSERT INTO users (oauth_id) 
                       VALUES (@OAuthId) 
@@ -43,7 +43,6 @@ namespace galaxy_match_make.Repositories
         public async Task<UserDto> GetUserById(Guid id)
         {
             using var connection = _context.CreateConnection();
-            await connection.OpenAsync();
             var user = await connection
                 .QueryFirstOrDefaultAsync<UserDto>("SELECT * FROM USERS WHERE ID = @Id", new { Id = id });
 

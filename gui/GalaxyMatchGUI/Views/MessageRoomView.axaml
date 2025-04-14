@@ -1,0 +1,70 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="using:GalaxyMatchGUI.ViewModels"
+             x:DataType="vm:MessageRoomViewModel"
+             Background="#0D0221"
+             x:Class="GalaxyMatchGUI.Views.MessageRoomView">
+    <Grid RowDefinitions="*,Auto" Margin="10">
+        <!-- Scrollable chat messages area -->
+        <ScrollViewer x:Name="MessagesScrollViewer" Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Messages}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="{Binding IsSentByMe, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#007ACC|#1E1E1E'}"
+                                Padding="10" 
+                                CornerRadius="5" 
+                                Margin="2"
+                                HorizontalAlignment="{Binding IsSentByMe, Converter={StaticResource BoolToAlignmentConverter}, ConverterParameter='Right|Left'}">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Content}" 
+                                           Foreground="White"
+                                           TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding Timestamp, StringFormat='{}{0:HH:mm}'}" 
+                                           Foreground="LightGray" 
+                                           FontSize="10" 
+                                           HorizontalAlignment="Right"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Input area -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto" Margin="0,10,0,0">
+            <TextBox Grid.Column="0"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     Watermark="Type a message..."
+                     Text="{Binding CurrentMessage, Mode=TwoWay}"
+                     Height="40"
+                     Margin="0,0,10,0" />
+            <Button Grid.Column="1"
+                    Content="Send"
+                    Command="{Binding SendMessageCommand}"
+                    Height="40" 
+                    Width="60" 
+                    IsEnabled="{Binding !IsLoading}"
+                    Margin="0,0,10,0"/>
+            <Button Grid.Column="2"
+                    Command="{Binding RefreshMessagesCommand}" 
+                    Content="Refresh" 
+                    IsEnabled="{Binding !IsLoading}"
+                    Height="40" 
+                    Width="75"/>
+        </Grid>
+        
+        <!-- Loading indicator (optional) -->
+        <Panel Grid.RowSpan="2" IsVisible="{Binding IsLoading}">
+            <Border Background="#80000000" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center" 
+                    Padding="20" 
+                    CornerRadius="5">
+                <ProgressBar IsIndeterminate="True" 
+                             Width="100"/>
+            </Border>
+        </Panel>
+    </Grid>
+</UserControl>
