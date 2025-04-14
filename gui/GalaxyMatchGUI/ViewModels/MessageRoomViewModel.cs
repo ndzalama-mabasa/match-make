@@ -8,8 +8,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System;
 using System.Linq;
-using GalaxyMatchGUI.Services;
-using GalaxyMatchGUI.Models;
 
 namespace GalaxyMatchGUI.ViewModels;
 
@@ -19,7 +17,7 @@ public partial class MessageRoomViewModel : ViewModelBase
     
     // IDs for the current user and recipient
     private readonly string _recipientId = "1e197a1e-a5f7-4044-bba9-13fb431808c0"; // Replace with actual user ID
-    private readonly string _currentUserId; // Replace with actual recipient ID
+    private readonly string _currentUserId = "b892c8f9-b187-4c0e-940b-3e7a92a70242"; // Replace with actual recipient ID
     
     [ObservableProperty]
     private string currentMessage = string.Empty;
@@ -31,13 +29,7 @@ public partial class MessageRoomViewModel : ViewModelBase
 
     public MessageRoomViewModel()
     {
-        var auth = JwtStorage.Instance.authDetails;
-        _currentUserId = ParseUserIdFromJwt(auth.JwtToken);
-        
         _httpClient = new HttpClient();
-        _httpClient.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", auth.JwtToken);
-
         LoadInitialMessagesCommand.Execute(null);
     }
 

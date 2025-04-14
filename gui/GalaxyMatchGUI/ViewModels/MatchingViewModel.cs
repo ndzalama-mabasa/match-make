@@ -186,6 +186,7 @@ public class MatchingViewModel : ViewModelBase
     private void ViewMessages()
     {
         // Navigate to messages view
+        NavigationService?.NavigateTo<MessageRoomViewModel>();
     }
 
     private async Task LoadNextProfile()
