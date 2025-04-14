@@ -10,5 +10,6 @@ namespace galaxy_match_make.Repositories
         Task<ProfileDto> CreateProfile(Guid id, CreateProfileDto profile);
 
         Task<IEnumerable<ProfileDto>> GetPendingMatchesByUserId(Guid id);
+        Task<IEnumerable<MatchedProfileDto>> GetUserMatchedProfiles(Guid id);
     }
 }

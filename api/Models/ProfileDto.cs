@@ -1,5 +1,8 @@
-﻿namespace galaxy_match_make.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace galaxy_match_make.Models
 {
+    [Table("profiles")]
     public class ProfileDto
     {
         public int Id { get; set; }
