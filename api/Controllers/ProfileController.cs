@@ -100,34 +100,38 @@ namespace galaxy_match_make.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error creating profile: {ex.Message}");
             }
         }
+
         [Authorize]
         [HttpGet("me")]
         public async Task<ActionResult<ProfileDto>> GetMyProfile()
         {
-            var profileClaimToken  = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var profileClaimToken = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(profileClaimToken) || !Guid.TryParse(profileClaimToken, out Guid userId))
             {
                 return Unauthorized("User ID not found in token or invalid format");
             }
- 
+
             var user = await _userRepository.GetUserById(userId);
             if (user == null)
             {
                 return NotFound($"Reactor user with ID {userId} not found");
             }
- 
+
             var profile = await _profileRepository.GetProfileById(userId);
             if (profile == null)
             {
                 return NotFound("Profile not found");
             }
- 
+
             return Ok(profile);
+        }
+
         [HttpGet("{profileId}/preferred_profiles")]
         public async Task<ActionResult<IEnumerable<ProfileDto>>> GetPreferredProfiles(int profileId)
         {
             return Ok(await _profileService.GetPreferredProfiles(profileId));
- 
+        }
+
         [Authorize]
         [HttpGet("matched")]
         public async Task<ActionResult<List<MatchedProfileDto>>> GetUserMatchedProfilesFromToken()
