@@ -52,6 +52,7 @@ public partial class App : Application
             navigationService.RegisterView<LoginViewModel, LoginView>();
             navigationService.RegisterView<MatchingViewModel, MatchingView>();
             navigationService.RegisterView<ContactsListViewModel, ContactsListView>();
+            navigationService.RegisterView<ProfileViewModel, ProfileView>();
             
             // Register navigation service in DI container
             services.AddSingleton<INavigationService>(navigationService);
@@ -73,6 +74,7 @@ public partial class App : Application
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<MatchingViewModel>();
         services.AddTransient<ContactsListViewModel>();
+        services.AddTransient<ProfileViewModel>();
         
     }
 

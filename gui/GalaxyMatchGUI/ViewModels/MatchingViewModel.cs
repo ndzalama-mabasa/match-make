@@ -161,13 +161,31 @@ public class MatchingViewModel : ViewModelBase
 
     private void ViewProfile()
     {
-        // Navigate to profile view
+        // Check if there's a profile to view
+        if (CurrentProfile == null) return;
+        
+        // Create a new ProfileViewModel instance
+        var profileViewModel = new ProfileViewModel
+        {
+            IsEditMode = true,
+            ExistingProfile = CurrentProfile,
+            DisplayName = CurrentProfile.DisplayName,
+            Bio = CurrentProfile.Bio,
+            AvatarUrl = CurrentProfile.AvatarUrl,
+            HeightInGalacticInches = CurrentProfile.HeightInGalacticInches,
+            GalacticDateOfBirth = CurrentProfile.GalacticDateOfBirth,
+            SelectedPlanet = CurrentProfile.Planet,
+            SelectedSpecies = CurrentProfile.Species,
+            SelectedGender = CurrentProfile.Gender
+        };
+        
+        // Navigate to the profile view
+        NavigationService?.NavigateTo(profileViewModel);
     }
 
     private void ViewMessages()
     {
         // Navigate to messages view
-        NavigationService?.NavigateTo<ContactsListViewModel>();
     }
 
     private async Task LoadNextProfile()

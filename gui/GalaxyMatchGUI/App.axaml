@@ -16,5 +16,6 @@
     
     <Application.Resources>
         <converters:InitialsConverter x:Key="InitialsConverter" />
+        <converters:InterestSelectedConverter x:Key="InterestSelectedConverter" />
     </Application.Resources>
 </Application>
