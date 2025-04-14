@@ -68,6 +68,7 @@ public class MatchingViewModel : ViewModelBase
     private void ViewMessages()
     {
         // Navigate to messages view
+        NavigationService?.NavigateTo<ContactsListViewModel>();
     }
 
     private void LoadNextProfile()
