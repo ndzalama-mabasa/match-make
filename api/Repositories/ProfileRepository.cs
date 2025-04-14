@@ -6,6 +6,7 @@ using galaxy_match_make.Models;
 using Humanizer;
 using Npgsql;
 using NuGet.Protocol.Plugins;
+using System.Data;
 
 namespace galaxy_match_make.Repositories;
 
@@ -37,11 +38,8 @@ public class ProfileRepository : IProfileRepository
     {
         var sql = GetUpsertProfileSql(true);
 
-
         using var connection = _context.CreateConnection();
-        await connection.OpenAsync(); 
-
-        using var transaction = await connection.BeginTransactionAsync();
+        using var transaction = connection.BeginTransaction();
 
         try
         {
@@ -77,12 +75,12 @@ public class ProfileRepository : IProfileRepository
                 }
             }
 
-            await transaction.CommitAsync();
+            transaction.Commit();
             return await GetProfileById(id);
         }
         catch
         {
-            await transaction.RollbackAsync();
+            transaction.Rollback();
             throw;
         }
     }
@@ -92,8 +90,7 @@ public class ProfileRepository : IProfileRepository
         var sql = GetUpsertProfileSql(false);
 
         using var connection = _context.CreateConnection();
-        await connection.OpenAsync(); 
-        using var transaction = await connection.BeginTransactionAsync(); 
+        using var transaction = connection.BeginTransaction();
 
         try
         {
@@ -126,12 +123,12 @@ public class ProfileRepository : IProfileRepository
                 }
             }
 
-            await transaction.CommitAsync();
+            transaction.Commit();
             return await GetProfileById(id);
         }
         catch
         {
-            await transaction.RollbackAsync();
+            transaction.Rollback();
             throw;
         }
     }
@@ -155,6 +152,7 @@ public class ProfileRepository : IProfileRepository
                 sql,
                 (profile, species, planet, gender, userInterestsJson) =>
                 {
+                    // Handle null objects without setting read-only Id properties directly
                     profile.Species = species;
                     profile.Planet = planet;
                     profile.Gender = gender;
@@ -199,7 +197,7 @@ public class ProfileRepository : IProfileRepository
                     AND r2.is_positive = true
               );";
 
-        using var connection = GetConnection();
+        using var connection = _context.CreateConnection();
         return await connection.QueryAsync<MatchedProfileDto>(query, new { UserId });
     }
 
