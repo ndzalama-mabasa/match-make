@@ -31,4 +31,13 @@
     <PackageReference Include="ReactiveUI" Version="20.2.45" />
     <PackageReference Include="System.Reactive" Version="6.0.1" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\InteractionsView.axaml.cs">
+      <DependentUpon>InteracctionsView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\InteractionsView.axaml.cs">
+      <DependentUpon>InteractionsView.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>
