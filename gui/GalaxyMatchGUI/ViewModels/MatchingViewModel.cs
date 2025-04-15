@@ -59,6 +59,13 @@ public class MatchingViewModel : ViewModelBase
         set => SetProperty(ref _cardOpacity, value);
     }
     
+    private bool _isBase64Image;
+    public bool IsBase64Image
+    {
+        get => _isBase64Image;
+        set => SetProperty(ref _isBase64Image, value);
+    }
+    
     private bool _isLoading;
     public bool IsLoading
     {
@@ -351,26 +358,34 @@ public class MatchingViewModel : ViewModelBase
         // Create a profile with base64 image 
         var profile = CreateBasicProfile();
         
-        profile.AvatarUrl = "https://images.unsplash.com/photo-1580923368248-877f237696cd?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+        // Use a base64 encoded image for testing
+        // This is a simple purple gradient image
+        string sampleBase64Image = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABHNCSVQICAgIfAhkiAAAAUdJREFUeJzt1DEBwCAAwDB0voIzhD0EBDkTBTUNmTfHP1nXdR5+besDPM0AMQPEDBBb5w1vt5+orV4HiAFiBogZIGaAmAFiBogZIGaAmAFiBogZIGaAmAFiBogZIGaAmAFiBogZIGaAmAFiBogZIGaAmAFiBogZIGaAmAFiBogZIGaAmAFiBogZIGaAmAFiBogZIGaAmAFiBogZIGaAmAFiBogZIGaAmAFiBogZIGaAmAFiBogZIGaAmAFiBogZIGaAmAFiBogZIPYBmuwEO61WpfIAAAAASUVORK5CYII=";
         
-        // Check if there's a valid URL in the profile
-        bool hasValidUrl = !string.IsNullOrEmpty(profile.AvatarUrl) && 
-                          (profile.AvatarUrl.StartsWith("http://") || 
-                           profile.AvatarUrl.StartsWith("https://"));
+        // Load the base64 image
+        await LoadBase64Image(sampleBase64Image);
         
-        // If there's no valid URL, use the local asset file
-        if (!hasValidUrl)
-        {
-            profile.AvatarUrl = "avares://GalaxyMatchGUI/Assets/alien_profile.png";
-        }
-        
+        // Set current profile
         CurrentProfile = profile;
         
-        // Try to load the image
-        await LoadProfileImage(profile.AvatarUrl);
-
         // Load other profile data
         LoadProfileData();
+    }
+    
+    private Profile CreateBasicProfile()
+    {
+        // Create a basic profile for demo/fallback purposes
+        return new Profile
+        {
+            UserId = Guid.NewGuid(),
+            DisplayName = "Zetron-7",
+            Bio = "Greetings, Earth dwellers! I come in peace from the Andromeda galaxy. Looking for beings who appreciate quantum harmonics and interstellar travel. I can shape-shift and read minds, but I promise I won't peek without permission!",
+            Gender = new Models.Gender { GenderName = "Fluid" },
+            Species = new Models.Species { SpeciesName = "Andromedian" },
+            Planet = new Models.Planet { PlanetName = "Zetron Prime" },
+            HeightInGalacticInches = 152,
+            GalacticDateOfBirth = 1535
+        };
     }
     
     private async Task LoadProfileImage(string? avatarUrl)
@@ -383,6 +398,13 @@ public class MatchingViewModel : ViewModelBase
         
         try
         {
+            // Check if it's a base64 image
+            if (avatarUrl.StartsWith("data:image") && avatarUrl.Contains("base64,"))
+            {
+                await LoadBase64Image(avatarUrl);
+                return;
+            }
+            
             bool hasValidUrl = !string.IsNullOrEmpty(avatarUrl) && 
                               (avatarUrl.StartsWith("http://") || 
                                avatarUrl.StartsWith("https://"));
@@ -417,32 +439,45 @@ public class MatchingViewModel : ViewModelBase
             }
         }
     }
-
-    private Profile CreateBasicProfile()
+    
+    // Dedicated method for handling base64 encoded images
+    private async Task LoadBase64Image(string base64String)
     {
-        // Create a user with real ID for testing
-        var user = new User { 
-            OauthId = "mock-oauth-id",
-            Id = Guid.Parse("b4fa3ae7-c82a-4d3e-acc3-84b60b4f0492") // Real user ID for testing
-        };
-        
-        // Create the profile with a reference to the user
-        var profile = new Profile
+        if (string.IsNullOrEmpty(base64String))
         {
-            Id = 2, // Real profile ID for testing
-            DisplayName = "Zorb",
-            Bio = "Greetings earthlings! I enjoy exploring the cosmos and collecting rare minerals. Looking for a companion who appreciates the beauty of nebulae and doesn't mind my occasional tentacle shedding.",
-            GalacticDateOfBirth = 8750, // Galactic year
-            Species = new Species { SpeciesName = "Zorlaxian" },
-            Planet = new Planet { PlanetName = "Nebulon-5" },
-            UserId = user.Id
-        };
-        
-        // Set up the bidirectional relationship after both objects are created
-        user.Profile = profile;
-        profile.User = user;
-        
-        return profile;
+            // Fall back to default image if base64 is empty
+            await LoadProfileImage("avares://GalaxyMatchGUI/Assets/alien_profile.png");
+            return;
+        }
+
+        try
+        {
+            IsBase64Image = true;
+            
+            // Remove the data URL prefix if present (e.g., "data:image/jpeg;base64,")
+            string sanitizedBase64 = base64String;
+            if (base64String.Contains(","))
+            {
+                sanitizedBase64 = base64String.Substring(base64String.IndexOf(',') + 1);
+            }
+            
+            // Convert base64 to byte array
+            byte[] imageBytes = Convert.FromBase64String(sanitizedBase64);
+            
+            // Create a bitmap from the byte array
+            using (var memoryStream = new MemoryStream(imageBytes))
+            {
+                AvatarImage = new Bitmap(memoryStream);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading base64 image: {ex.Message}");
+            IsBase64Image = false;
+            
+            // Fall back to default image
+            await LoadProfileImage("avares://GalaxyMatchGUI/Assets/alien_profile.png");
+        }
     }
 
     private void LoadProfileData()
