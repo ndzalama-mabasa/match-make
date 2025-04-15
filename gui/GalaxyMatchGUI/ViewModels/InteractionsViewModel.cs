@@ -272,5 +272,12 @@ namespace GalaxyMatchGUI.ViewModels
                 EmptyStateMessage = "Your cosmic network is empty.\nStart exploring to connect with fellow space travelers!";
             }
         }
+        
+        public void HandleReactionClick(Contact contact)
+        {
+            SelectedContact = contact;
+            Console.WriteLine($"Navigating to profile: {contact.DisplayName}");
+            NavigationService?.NavigateTo<MessageRoomViewModel>();
+        }
     }
 }
