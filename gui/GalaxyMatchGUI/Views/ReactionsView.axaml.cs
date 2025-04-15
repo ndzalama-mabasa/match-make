@@ -4,12 +4,12 @@ using GalaxyMatchGUI.Services;
 using GalaxyMatchGUI.ViewModels;
 namespace GalaxyMatchGUI.Views;
 
-public partial class ContactsListView : UserControl
+public partial class ReactionsView : UserControl
 {
-    public ContactsListView()
+    public ReactionsView()
     {
         InitializeComponent();
-        DataContext = new ContactsListViewModel();
+        DataContext = new ReactionsViewModel();
     }
 
     private void InitializeComponent()

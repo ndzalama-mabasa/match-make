@@ -1,10 +1,9 @@
-namespace galaxy_match_make.Models;
-
-public class ReactionDto
+namespace galaxy_match_make.Models
 {
-    public int Id { get; set; }
-    public Guid ReactorId { get; set; }
-    public Guid TargetId { get; set; }
-    public bool IsPositive { get; set; }
-
+    public class ReactionDto
+    {
+        public Guid UserId { get; set; }
+        public string DisplayName { get; set; }
+        public string AvatarUrl { get; set; }
+    }
 }

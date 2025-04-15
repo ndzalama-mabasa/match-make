@@ -4,11 +4,7 @@ namespace galaxy_match_make.Repositories;
 
 public interface IReactionRepository
 {
-    Task<IEnumerable<ReactionDto>> GetAllReactionsAsync();
-    Task<ReactionDto?> GetReactionByIdAsync(int id);
-    Task AddReactionAsync(ReactionDto reaction);
-    Task UpdateReactionAsync(ReactionDto reaction);
-    Task DeleteReactionAsync(int id);
-    Task<IEnumerable<ReactionDto>> GetReactionsByReactorAsync(Guid userId);
-    Task<ReactionDto?> GetReactionByReactorAndTargetAsync(Guid reactorId, Guid targetId);
+    Task<List<ReactionDto>> GetReactions(Guid userId);
+    Task<List<ReactionDto>> GetSentRequests(Guid userId);
+    Task<List<ReactionDto>> GetReceivedRequests(Guid userId);
 }
