@@ -1,17 +1,34 @@
-using System;
+﻿using System;
+using System.Threading.Tasks;
+using GalaxyMatchGUI.ViewModels;
 
-namespace GalaxyMatchGUI.Models
+namespace GalaxyMatchGUI.Models;
+
+public class Reaction
 {
-    public class Reaction
+    ReactionsViewModel _reactionsViewModel;
+    public Reaction(ReactionsViewModel reactionsViewModel)
     {
-        public int Id { get; set; }
-        public Guid ReactorId { get; set; }
-        public Guid TargetId { get; set; }
-        public bool IsPositive { get; set; }
-        public DateTime CreatedAt { get; set; }
-        
-        // Navigation properties
-        public required User Reactor { get; set; }
-        public required User Target { get; set; }
+        _reactionsViewModel = reactionsViewModel;
+    }
+
+    public Reaction(){}
+
+    public void SetContactsViewModel(ReactionsViewModel reactionsViewModel)
+    {
+        _reactionsViewModel = reactionsViewModel;
+    }
+    public Guid UserId { get; set; }
+    public string DisplayName { get; set; }
+    public string AvatarUrl { get; set; }
+
+    public async Task AcceptRequest()
+    {
+        await _reactionsViewModel.AcceptRequestAsync(this);
+    }
+    
+    public async Task CancelRequest()
+    {
+        await _reactionsViewModel.CancelRequestAsync(this);
     }
 }

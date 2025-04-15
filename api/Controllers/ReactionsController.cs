@@ -1,113 +1,71 @@
+namespace galaxy_match_make.Controllers;
+
+using System.Security.Claims;
 using galaxy_match_make.Models;
 using galaxy_match_make.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-
-namespace galaxy_match_make.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class ReactionsController : ControllerBase
 {
     private readonly IReactionRepository _reactionRepository;
-    private readonly IUserRepository _userRepository;
-
-    public ReactionsController(IReactionRepository reactionRepository, IUserRepository userRepository)
+    
+    public ReactionsController(IReactionRepository reactionRepository)
     {
         _reactionRepository = reactionRepository;
-        _userRepository = userRepository;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllReactions()
-    {
-        var reactions = await _reactionRepository.GetAllReactionsAsync();
-        return Ok(reactions);
-    }
-
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetReactionById(int id)
-    {
-        var reaction = await _reactionRepository.GetReactionByIdAsync(id);
-        if (reaction == null)
-        {
-            return NotFound();
-        }
-        return Ok(reaction);
-    }
-
     [Authorize]
-    [HttpPost]
-    public async Task<IActionResult> AddReaction([FromBody] ReactionRequest request)
+    public async Task<IActionResult> GetReactions()
     {
-        var reactorIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        
-        if (string.IsNullOrEmpty(reactorIdClaim) || !Guid.TryParse(reactorIdClaim, out Guid reactorId))
-        {
-            return Unauthorized("User ID not found in token or invalid format");
-        }
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var reactions = await _reactionRepository.GetReactions(Guid.Parse(userId));
 
-        var reactor = await _userRepository.GetUserById(reactorId);
-        if (reactor == null)
+        if (reactions == null)
         {
-            return NotFound($"Reactor user with ID {reactorId} not found");
-        }
-
-        var target = await _userRepository.GetUserById(request.TargetId);
-        if (target == null)
-        {
-            return NotFound($"Target user with ID {request.TargetId} not found");
-        }
-
-        var reaction = new ReactionDto
-        {
-            ReactorId = reactorId,
-            TargetId = request.TargetId,
-            IsPositive = request.IsPositive
-        };
-        
-        var existingReaction = await _reactionRepository.GetReactionByReactorAndTargetAsync(reaction.ReactorId, reaction.TargetId);
-        if (existingReaction != null)
-        {
-            return BadRequest("You have already reacted to this profile.");
+            return Ok(new List<ReactionDto>());
         }
         else
         {
-            await _reactionRepository.AddReactionAsync(reaction);
-            return CreatedAtAction(nameof(GetReactionById), new { id = reaction.Id }, reaction);
+            return Ok(reactions);
         }
-
     }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateReaction(int id, [FromBody] ReactionDto reaction)
+    
+    [HttpGet("received-requests")]
+    [Authorize]
+    public async Task<IActionResult> GetReceivedRequests()
     {
-        if (id != reaction.Id)
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var requests = await _reactionRepository.GetReceivedRequests(Guid.Parse(userId));
+
+        if (requests == null)
         {
-            return BadRequest();
+            return Ok(new List<ReactionDto>());
         }
-        await _reactionRepository.UpdateReactionAsync(reaction);
-        return NoContent();
+        else
+        {
+            return Ok(requests);
+        }
     }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteReaction(int id)
+    
+    [HttpGet("sent-requests")]
+    [Authorize]
+    public async Task<IActionResult> GetSentRequests()
     {
-        await _reactionRepository.DeleteReactionAsync(id);
-        return NoContent();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var requests = await _reactionRepository.GetSentRequests(Guid.Parse(userId));
+
+        if (requests == null)
+        {
+            return Ok(new List<ReactionDto>());
+        }
+        else
+        {
+            return Ok(requests);
+        }
     }
 
-    [HttpGet("user/{userId}")]
-    public async Task<IActionResult> GetReactionsByReactor(Guid userId)
-    {
-        var reactions = await _reactionRepository.GetReactionsByReactorAsync(userId);
-        return Ok(reactions);
-    }
-}
-
-public class ReactionRequest
-{
-    public Guid TargetId { get; set; }
-    public bool IsPositive { get; set; }
 }
