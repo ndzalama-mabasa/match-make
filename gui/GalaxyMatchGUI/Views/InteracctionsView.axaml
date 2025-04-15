@@ -12,7 +12,6 @@
     <Grid RowDefinitions="Auto,*" Background="#0D0221" Margin="20">
         
         <!-- Top content -->
-        <StackPanel Spacing="20" Grid.Row="0">
             <!-- Header -->
             <!-- Header with Back Button -->
             <Border CornerRadius="10" Background="#1E0B45" Padding="15">
@@ -47,7 +46,7 @@
             </Border>
 
             <!-- Tab Control -->
-            <TabControl Background="Transparent" Padding="0">
+            <TabControl Grid.Row="1" Background="Transparent" Padding="0">
                 <TabControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Rows="1"/>
@@ -389,7 +388,6 @@
                     </Grid>
                 </TabItem>
             </TabControl>
-        </StackPanel>
         
         <!-- Empty state message -->
         <TextBlock Grid.Row="1" 
