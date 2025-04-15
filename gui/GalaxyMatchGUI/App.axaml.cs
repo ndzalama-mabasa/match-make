@@ -52,7 +52,7 @@ public partial class App : Application
             // Register views with navigation service
             navigationService.RegisterView<LoginViewModel, LoginView>();
             navigationService.RegisterView<MatchingViewModel, MatchingView>();
-            navigationService.RegisterView<ReactionsViewModel, ReactionsView>();
+            navigationService.RegisterView<InteractionsViewModel, InteractionsView>();
             navigationService.RegisterView<MessageRoomViewModel, MessageRoomView>();
             navigationService.RegisterView<ProfileViewModel, ProfileView>();
             
@@ -63,8 +63,9 @@ public partial class App : Application
             ServiceProvider = services.BuildServiceProvider();
             
             // Navigate to login view
-            navigationService.NavigateTo<MatchingViewModel>();
+            // navigationService.NavigateTo<MatchingViewModel>();
             
+            navigationService.NavigateTo<LoginViewModel>();
             Settings = AppSettings.Load();
         }
 
@@ -77,7 +78,7 @@ public partial class App : Application
         services.AddTransient<LoginViewModel>();
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<MatchingViewModel>();
-        services.AddTransient<ReactionsViewModel>();
+        services.AddTransient<InteractionsViewModel>();
         services.AddTransient<MessageRoomViewModel>();
         services.AddTransient<ProfileViewModel>();
         
