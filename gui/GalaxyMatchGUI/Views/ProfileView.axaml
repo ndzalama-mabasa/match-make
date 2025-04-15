@@ -325,7 +325,10 @@
                         <TextBlock Text="Cancel" 
                                   Foreground="White"
                                   FontSize="16"
-                                  FontWeight="SemiBold"/>
+                                  FontWeight="SemiBold"
+                                  HorizontalAlignment="Center" 
+                                  VerticalAlignment="Center"
+                                  />
                     </Button>
                     
                     <Button Command="{Binding SaveProfileCommand}"
@@ -341,7 +344,10 @@
                         <TextBlock Text="{Binding IsEditMode, Converter={x:Static conv:BoolConverters.ToString}, ConverterParameter='Update Profile|Save Profile'}" 
                                   Foreground="White"
                                   FontSize="16"
-                                  FontWeight="SemiBold"/>
+                                  FontWeight="SemiBold"
+                                  HorizontalAlignment="Center" 
+                                  VerticalAlignment="Center"
+                                  />
                     </Button>
                 </StackPanel>
                 
