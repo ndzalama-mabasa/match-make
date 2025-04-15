@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GalaxyMatchGUI.ViewModels;
@@ -74,8 +75,12 @@ public class MatchingViewModel : ViewModelBase
 
     public ObservableCollection<PhysicalAttribute> PhysicalAttributes { get; } = new();
     public ObservableCollection<InterestItem> Interests { get; } = new();
+    
+    private List<Profile> _allProfiles = new List<Profile>();
 
     private readonly ReactionService _reactionService;
+    private readonly ProfileService _profileService;
+    private int _currentProfileIndex = 0;
 
     public IRelayCommand SwipeLeftCommand { get; }
     public IRelayCommand SwipeRightCommand { get; }
@@ -85,13 +90,143 @@ public class MatchingViewModel : ViewModelBase
     public MatchingViewModel()
     {
         _reactionService = new ReactionService();
+        _profileService = new ProfileService();
         SwipeLeftCommand = new RelayCommand(SwipeLeft);
         SwipeRightCommand = new RelayCommand(SwipeRight);
         ViewProfileCommand = new RelayCommand(ViewProfile);
         ViewMessagesCommand = new RelayCommand(ViewMessages);
 
-        // Load initial profile with base64 image
-        _ = LoadProfileWithBase64Image();
+        // Load profiles from API with JWT token
+        _ = LoadAllProfiles();
+    }
+
+    private async Task LoadAllProfiles()
+    {
+        IsLoading = true;
+        StatusMessage = "Finding matches in your galaxy...";
+        
+        try
+        {
+            // Check if JWT token is available
+            var jwtToken = JwtStorage.Instance.authDetails?.JwtToken;
+            if (string.IsNullOrEmpty(jwtToken))
+            {
+                StatusMessage = "You must be logged in to find matches";
+                return;
+            }
+            
+            // Get all profiles from the API
+            _allProfiles = await _profileService.GetAllProfilesAsync();
+            
+            if (_allProfiles != null && _allProfiles.Any())
+            {
+                // Start showing the first profile
+                await ShowNextProfile();
+            }
+            else
+            {
+                // No profiles found, show fallback
+                StatusMessage = "No profiles found in your galaxy";
+                await LoadProfileWithBase64Image();
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error loading profiles: {ex.Message}";
+            // Fall back to demo profile
+            await LoadProfileWithBase64Image();
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+    
+    private async Task ShowNextProfile()
+    {
+        if (_allProfiles == null || !_allProfiles.Any())
+        {
+            StatusMessage = "No more profiles to show";
+            return;
+        }
+        
+        // Check if we've shown all profiles
+        if (_currentProfileIndex >= _allProfiles.Count)
+        {
+            StatusMessage = "You've seen all profiles in your galaxy";
+            _currentProfileIndex = 0;
+        }
+        
+        // Get next profile
+        var profile = _allProfiles[_currentProfileIndex++];
+        CurrentProfile = profile;
+        
+        Console.WriteLine($"Showing profile: {profile.DisplayName}");
+        
+        // Try to load profile image
+        await LoadProfileImage(profile.AvatarUrl);
+        
+        // Load profile specific data
+        LoadProfileAttributes(profile);
+        
+        StatusMessage = string.Empty;
+    }
+    
+    private void LoadProfileAttributes(Profile profile)
+    {
+        // Clear physical attributes
+        PhysicalAttributes.Clear();
+        
+        // Add species as first attribute
+        if (profile.Species != null)
+        {
+            PhysicalAttributes.Add(new PhysicalAttribute { Icon = "👽", Description = profile.Species.SpeciesName });
+        }
+        
+        // Add planet as attribute
+        if (profile.Planet != null)
+        {
+            PhysicalAttributes.Add(new PhysicalAttribute { Icon = "🪐", Description = $"From {profile.Planet.PlanetName}" });
+        }
+        
+        // Add gender if available
+        if (profile.Gender != null)
+        {
+            string genderIcon = profile.Gender.GenderName switch
+            {
+                "Male" => "♂️",
+                "Female" => "♀️",
+                "Non-Binary" => "⚧️",
+                "Fluid" => "🌊",
+                _ => "✨"
+            };
+            PhysicalAttributes.Add(new PhysicalAttribute { Icon = genderIcon, Description = profile.Gender.GenderName });
+        }
+        
+        // Add height if available
+        if (profile.HeightInGalacticInches.HasValue)
+        {
+            PhysicalAttributes.Add(new PhysicalAttribute 
+            { 
+                Icon = "📏", 
+                Description = $"{profile.HeightInGalacticInches.Value} galactic inches" 
+            });
+        }
+        
+        // Clear and populate interests from user interests
+        Interests.Clear();
+        if (profile.UserInterests != null && profile.UserInterests.Any())
+        {
+            foreach (var interest in profile.UserInterests)
+            {
+                Interests.Add(new InterestItem { Name = interest.InterestName });
+            }
+        }
+        else
+        {
+            // Add a placeholder if no interests
+            Interests.Add(new InterestItem { Name = "No listed interests" });
+        }
     }
 
     private void SwipeLeft()
@@ -106,7 +241,7 @@ public class MatchingViewModel : ViewModelBase
     
     private async Task HandleSwipe(double translateX, double rotation, bool isLike)
     {
-        if (CurrentProfile?.User == null)
+        if (CurrentProfile == null || CurrentProfile.UserId == Guid.Empty)
         {
             return;
         }
@@ -148,7 +283,16 @@ public class MatchingViewModel : ViewModelBase
         CardRotation = 0;
         CardOpacity = 0;
         
-        await LoadNextProfile();
+        // If we have profiles from API, show next profile
+        if (_allProfiles.Any())
+        {
+            await ShowNextProfile();
+        }
+        else
+        {
+            // Fall back to demo profile
+            await LoadNextProfile();
+        }
         
         // Fade in with slight scale effect
         CardScale = 0.95;
@@ -188,7 +332,8 @@ public class MatchingViewModel : ViewModelBase
         // Navigate to messages view
         NavigationService?.NavigateTo<ContactsViewModel>();
     }
-
+    
+    // Fallback methods for demo profile if API fails
     private async Task LoadNextProfile()
     {
         IsLoading = true;
@@ -222,17 +367,35 @@ public class MatchingViewModel : ViewModelBase
         CurrentProfile = profile;
         
         // Try to load the image
+        await LoadProfileImage(profile.AvatarUrl);
+
+        // Load other profile data
+        LoadProfileData();
+    }
+    
+    private async Task LoadProfileImage(string? avatarUrl)
+    {
+        if (string.IsNullOrEmpty(avatarUrl))
+        {
+            // Use default image
+            avatarUrl = "avares://GalaxyMatchGUI/Assets/alien_profile.png";
+        }
+        
         try
         {
-            if (hasValidUrl && !string.IsNullOrEmpty(profile.AvatarUrl))
+            bool hasValidUrl = !string.IsNullOrEmpty(avatarUrl) && 
+                              (avatarUrl.StartsWith("http://") || 
+                               avatarUrl.StartsWith("https://"));
+                               
+            if (hasValidUrl)
             {
                 // Load from remote URL
-                AvatarImage = await AsyncImageLoader.LoadAsync(profile.AvatarUrl);
+                AvatarImage = await AsyncImageLoader.LoadAsync(avatarUrl);
             }
-            else if (!string.IsNullOrEmpty(profile.AvatarUrl))
+            else
             {
                 // Load from local asset
-                var uri = new Uri(profile.AvatarUrl);
+                var uri = new Uri(avatarUrl);
                 using var stream = AssetLoader.Open(uri);
                 AvatarImage = new Bitmap(stream);
             }
@@ -241,28 +404,18 @@ public class MatchingViewModel : ViewModelBase
         {
             Console.WriteLine($"Error loading profile image: {ex.Message}");
             
-            // If URL loading fails, try fall back to local asset
-            if (hasValidUrl)
+            try
             {
-                try
-                {
-                    profile.AvatarUrl = "avares://GalaxyMatchGUI/Assets/alien_profile.png";
-                    if (!string.IsNullOrEmpty(profile.AvatarUrl))
-                    {
-                        var uri = new Uri(profile.AvatarUrl);
-                        using var stream = AssetLoader.Open(uri);
-                        AvatarImage = new Bitmap(stream);
-                    }
-                }
-                catch (Exception fallbackEx)
-                {
-                    Console.WriteLine($"Error loading fallback image: {fallbackEx.Message}");
-                }
+                // If URL loading fails, try fall back to local asset
+                var uri = new Uri("avares://GalaxyMatchGUI/Assets/alien_profile.png");
+                using var stream = AssetLoader.Open(uri);
+                AvatarImage = new Bitmap(stream);
+            }
+            catch (Exception fallbackEx)
+            {
+                Console.WriteLine($"Error loading fallback image: {fallbackEx.Message}");
             }
         }
-
-        // Load other profile data
-        LoadProfileData();
     }
 
     private Profile CreateBasicProfile()

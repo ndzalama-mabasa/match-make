@@ -61,8 +61,8 @@ public partial class App : Application
             // Build service provider after navigation service is registered
             ServiceProvider = services.BuildServiceProvider();
             
-            // Navigate to login view
-            navigationService.NavigateTo<MatchingViewModel>();
+            // Navigate to login view first to ensure user is authenticated
+            navigationService.NavigateTo<LoginViewModel>();
         }
 
         base.OnFrameworkInitializationCompleted();
