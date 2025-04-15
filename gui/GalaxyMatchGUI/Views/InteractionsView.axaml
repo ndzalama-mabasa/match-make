@@ -142,6 +142,7 @@
                                                 Padding="10"
                                                 BorderBrush="#5D12D2"
                                                 BorderThickness="1"
+                                                PointerPressed="OnReactionPointerPressed"
                                                 Cursor="Hand">
                                             <Grid ColumnDefinitions="Auto,*">
                                                 <!-- Avatar -->
