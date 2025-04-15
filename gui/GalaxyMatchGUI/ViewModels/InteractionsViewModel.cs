@@ -277,7 +277,7 @@ namespace GalaxyMatchGUI.ViewModels
         {
             SelectedContact = contact;
             Console.WriteLine($"Navigating to profile: {contact.DisplayName}");
-            NavigationService?.NavigateTo<MessageRoomViewModel>();
+            NavigationService?.NavigateTo(new MessageRoomViewModel(contact));
         }
     }
 }
