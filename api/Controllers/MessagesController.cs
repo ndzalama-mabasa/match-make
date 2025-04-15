@@ -69,21 +69,4 @@ public class MessagesController : ControllerBase
         return Ok(messages);
     }
 
-    [HttpGet("contacts")]
-    [Authorize]
-    public async Task<IActionResult> GetChats()
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var chats = await _messageRepository.GetChatsByUserIdAsync(Guid.Parse(userId));
-
-        if (chats == null)
-        {
-            return Ok(new List<ReactionDto>());
-        }
-        else
-        {
-            return Ok(chats);
-        }
-    }
-
 }
