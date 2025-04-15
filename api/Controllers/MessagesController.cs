@@ -78,7 +78,7 @@ public class MessagesController : ControllerBase
 
         if (chats == null)
         {
-            return Ok(new List<ContactDto>());
+            return Ok(new List<ReactionDto>());
         }
         else
         {

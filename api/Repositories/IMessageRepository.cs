@@ -12,5 +12,5 @@ public interface IMessageRepository
 
     Task<IEnumerable<MessageDto>> GetMessagesBetweenTwoUsers(Guid senderId, Guid receiverId);
     
-    Task<List<ContactDto>> GetChatsByUserIdAsync(Guid userId);
+    Task<List<ReactionDto>> GetChatsByUserIdAsync(Guid userId);
 }

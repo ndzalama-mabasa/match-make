@@ -1,65 +1,84 @@
-using Dapper;
-using galaxy_match_make.Data;
-using galaxy_match_make.Models;
 using System.Data;
+using Dapper;
+using galaxy_match_make.Models;
 
 namespace galaxy_match_make.Repositories;
 
 public class ReactionRepository : IReactionRepository
 {
-    private readonly DapperContext _context;
+    private readonly IDbConnection _dbConnection;
 
-    public ReactionRepository(DapperContext context)
+    public ReactionRepository(IDbConnection dbConnection)
     {
-        _context = context;
+        _dbConnection = dbConnection;
+    }
+    
+    public async Task<List<ReactionDto>> GetReactions(Guid userId)
+    {
+        const string query = @"
+        SELECT 
+            p.user_id,
+            p.display_name,
+            p.avatar_url
+        FROM reactions r1
+        JOIN reactions r2 
+            ON r1.target_id = r2.reactor_id 
+           AND r1.reactor_id = r2.target_id
+           AND r2.is_positive = true
+        JOIN profiles p ON r1.target_id = p.user_id
+        WHERE r1.reactor_id = @UserId
+          AND r1.is_positive = true";
+
+        var results = await _dbConnection.QueryAsync<ReactionDto>(query, new { UserId = userId });
+        return results.ToList();
     }
 
-    public async Task<IEnumerable<ReactionDto>> GetAllReactionsAsync()
+    
+    public async Task<List<ReactionDto>> GetSentRequests(Guid userId)
     {
-        const string query = "SELECT id, reactor_id, target_id, is_positive FROM reactions";
-        using var connection = _context.CreateConnection();
-        return await connection.QueryAsync<ReactionDto>(query);
+        const string query = @"
+        SELECT 
+            p.user_id,
+            p.display_name,
+            p.avatar_url
+        FROM reactions r1
+        JOIN profiles p ON r1.target_id = p.user_id
+        WHERE r1.reactor_id = @UserId
+          AND r1.is_positive = true
+          AND NOT EXISTS (
+              SELECT 1 
+              FROM reactions r2 
+              WHERE r2.reactor_id = r1.target_id
+                AND r2.target_id = r1.reactor_id
+                AND r2.is_positive = true
+          )";
+
+        var results = await _dbConnection.QueryAsync<ReactionDto>(query, new { UserId = userId });
+        return results.ToList();
     }
 
-    public async Task<ReactionDto?> GetReactionByIdAsync(int id)
+    public async Task<List<ReactionDto>> GetReceivedRequests(Guid userId)
     {
-        const string query = "SELECT id, reactor_id, target_id, is_positive FROM reactions WHERE id = @Id";
-        using var connection = _context.CreateConnection();
-        return await connection.QuerySingleOrDefaultAsync<ReactionDto>(query, new { Id = id });
+        const string query = @"
+        SELECT 
+            p.user_id,
+            p.display_name,
+            p.avatar_url
+        FROM reactions r1
+        JOIN profiles p ON r1.reactor_id = p.user_id
+        WHERE r1.target_id = @UserId
+          AND r1.is_positive = true
+          AND NOT EXISTS (
+              SELECT 1 
+              FROM reactions r2 
+              WHERE r2.reactor_id = r1.target_id
+                AND r2.target_id = r1.reactor_id
+                AND r2.is_positive = true
+          )";
+
+        var results = await _dbConnection.QueryAsync<ReactionDto>(query, new { UserId = userId });
+        return results.ToList();
     }
 
-    public async Task AddReactionAsync(ReactionDto reaction)
-    {
-        const string query = "INSERT INTO reactions (reactor_id, target_id, is_positive) VALUES (@ReactorId, @TargetId, @IsPositive)";
-        using var connection = _context.CreateConnection();
-        await connection.ExecuteAsync(query, reaction);
-    }
 
-    public async Task UpdateReactionAsync(ReactionDto reaction)
-    {
-        const string query = "UPDATE reactions SET reactor_id = @ReactorId, target_id = @TargetId, is_positive = @IsPositive WHERE id = @Id";
-        using var connection = _context.CreateConnection();
-        await connection.ExecuteAsync(query, reaction);
-    }
-
-    public async Task DeleteReactionAsync(int id)
-    {
-        const string query = "DELETE FROM reactions WHERE id = @Id";
-        using var connection = _context.CreateConnection();
-        await connection.ExecuteAsync(query, new { Id = id });
-    }
-
-    public async Task<IEnumerable<ReactionDto>> GetReactionsByReactorAsync(Guid userId)
-    {
-        const string query = "SELECT * FROM reactions WHERE reactor_id = @UserId";
-        using var connection = _context.CreateConnection();
-        return await connection.QueryAsync<ReactionDto>(query, new { UserId = userId });
-    }
-
-    public async Task<ReactionDto?> GetReactionByReactorAndTargetAsync(Guid reactorId, Guid targetId)
-    {
-        const string query = "SELECT * FROM reactions WHERE reactor_id = @ReactorId AND target_id = @TargetId";
-        using var connection = _context.CreateConnection();
-        return await connection.QuerySingleOrDefaultAsync<ReactionDto>(query, new { ReactorId = reactorId, TargetId = targetId });
-    }
 }

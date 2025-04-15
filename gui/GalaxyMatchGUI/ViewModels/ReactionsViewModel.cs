@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -8,29 +9,30 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Windows.Input;
+using GalaxyMatchGUI.Services;
 
 namespace GalaxyMatchGUI.ViewModels
 {
-    public partial class ContactsViewModel : ViewModelBase
+    public partial class ReactionsViewModel : ViewModelBase
     {
-        [ObservableProperty] private ObservableCollection<Contact> _messageContacts = new();
+        [ObservableProperty] private ObservableCollection<Reaction> _messageContacts = new();
         [ObservableProperty] private bool _isLoadingMessages;
         [ObservableProperty] private string _messagesStatusMessage = string.Empty;
         
-        [ObservableProperty] private ObservableCollection<Contact> _sentRequestContacts = new();
+        [ObservableProperty] private ObservableCollection<Reaction> _sentRequestContacts = new();
         [ObservableProperty] private bool _isLoadingSentRequests;
         [ObservableProperty] private string _sentRequestsStatusMessage = string.Empty;
         
-        [ObservableProperty] private ObservableCollection<Contact> _receivedRequestContacts = new();
+        [ObservableProperty] private ObservableCollection<Reaction> _receivedRequestContacts = new();
         [ObservableProperty] private bool _isLoadingReceivedRequests;
         [ObservableProperty] private string _receivedRequestsStatusMessage = string.Empty;
         
         [ObservableProperty] private bool _showEmptyState;
         [ObservableProperty] private string _emptyStateMessage = "No connections found. Start exploring the cosmos!";
 
-        [ObservableProperty] private Contact _selectedContact;
+        [ObservableProperty] private Reaction _selectedReaction;
         
-        public ContactsViewModel()
+        public ReactionsViewModel()
         {
             Task.Run(async () => {
                 await LoadMessagesAsync();
@@ -53,12 +55,10 @@ namespace GalaxyMatchGUI.ViewModels
             {
                 IsLoadingMessages = true;
                 MessagesStatusMessage = "Loading message contacts...";
-                
-                await Task.Delay(1200);
 
                 MessageContacts.Clear();
-                
-                var messages = GetMockMessageContacts();
+
+                var messages = await GetMessageContactsAsync();
                 foreach (var contact in messages)
                 {
                     MessageContacts.Add(contact);
@@ -80,48 +80,20 @@ namespace GalaxyMatchGUI.ViewModels
             }
         }
 
-        private ObservableCollection<Contact> GetMockMessageContacts()
+        private async Task<ObservableCollection<Reaction>> GetMessageContactsAsync()
         {
-            return new ObservableCollection<Contact>
+            var httpClient = HttpService.Instance;
+            var reactionsList = (await httpClient.GetJsonAsync<List<Reaction>>("/api/reactions", true)) ?? new List<Reaction>();
+            foreach (var contact in reactionsList)
             {
-                new Contact(this)
-                {
-                    UserId = Guid.NewGuid(),
-                    DisplayName = "Nova Stargazer",
-                    AvatarUrl = "https://i.pravatar.cc/150?img=1"
-                },
-                new Contact(this)
-                {
-                    UserId = Guid.NewGuid(),
-                    DisplayName = "Orion Hunter",
-                    AvatarUrl = "https://i.pravatar.cc/150?img=2"
-                },
-                new Contact(this)
-                {
-                    UserId = Guid.NewGuid(),
-                    DisplayName = "Luna Eclipse",
-                    AvatarUrl = "https://i.pravatar.cc/150?img=3"
-                },
-                new Contact(this)
-                {
-                    UserId = Guid.NewGuid(),
-                    DisplayName = "Nova Stargazer",
-                    AvatarUrl = "https://i.pravatar.cc/150?img=1"
-                },
-                new Contact(this)
-                {
-                    UserId = Guid.NewGuid(),
-                    DisplayName = "Orion Hunter",
-                    AvatarUrl = "https://i.pravatar.cc/150?img=2"
-                },
-                new Contact(this)
-                {
-                    UserId = Guid.NewGuid(),
-                    DisplayName = "Luna Eclipse",
-                    AvatarUrl = "https://i.pravatar.cc/150?img=3"
-                }
-            };
+                contact.SetContactsViewModel(this);
+            }
+
+            return new ObservableCollection<Reaction>(reactionsList);
         }
+
+
+
 
         #endregion
 
@@ -139,12 +111,10 @@ namespace GalaxyMatchGUI.ViewModels
             {
                 IsLoadingSentRequests = true;
                 SentRequestsStatusMessage = "Loading sent requests...";
-                
-                await Task.Delay(1000);
 
                 SentRequestContacts.Clear();
                 
-                var sentRequests = GetMockSentRequestContacts();
+                var sentRequests = await GetSentRequestContacts();
                 foreach (var contact in sentRequests)
                 {
                     SentRequestContacts.Add(contact);
@@ -166,39 +136,29 @@ namespace GalaxyMatchGUI.ViewModels
             }
         }
 
-        private ObservableCollection<Contact> GetMockSentRequestContacts()
+        private async Task<ObservableCollection<Reaction>> GetSentRequestContacts()
         {
-            return new ObservableCollection<Contact>
+            var httpClient = HttpService.Instance;
+            var reactionsList = (await httpClient.GetJsonAsync<List<Reaction>>("/api/reactions/sent-requests", true)) ?? new List<Reaction>();
+            foreach (var reaction in reactionsList)
             {
-                new Contact(this)
-                {
-                    UserId = Guid.NewGuid(),
-                    DisplayName = "Andromeda Explorer",
-                    AvatarUrl = "https://i.pravatar.cc/150?img=4"
-                },
-                new Contact(this)
-                {
-                    UserId = Guid.NewGuid(),
-                    DisplayName = "Comet Chaser",
-                    AvatarUrl = "https://i.pravatar.cc/150?img=5"
-                }
-            };
+                reaction.SetContactsViewModel(this);
+            }
+            return new ObservableCollection<Reaction>(reactionsList);
         }
         
-        public async Task CancelRequestAsync(Contact contact)
+        public async Task CancelRequestAsync(Reaction reaction)
         {
             try
             {
-                if (contact == null) return;
+                if (reaction == null) return;
                 
                 IsLoadingSentRequests = true;
-                SentRequestsStatusMessage = $"Canceling request to {contact.DisplayName}...";
+                SentRequestsStatusMessage = $"Canceling request to {reaction.DisplayName}...";
                 
-                await Task.Delay(800);
+                SentRequestContacts.Remove(reaction);
                 
-                SentRequestContacts.Remove(contact);
-                
-                SentRequestsStatusMessage = $"Request to {contact.DisplayName} canceled";
+                SentRequestsStatusMessage = $"Request to {reaction.DisplayName} canceled";
                 
                 UpdateEmptyState();
             }
@@ -228,20 +188,18 @@ namespace GalaxyMatchGUI.ViewModels
             {
                 IsLoadingReceivedRequests = true;
                 ReceivedRequestsStatusMessage = "Loading received requests...";
-                
-                await Task.Delay(1500);
 
                 ReceivedRequestContacts.Clear();
                 
-                var receivedRequests = GetMockReceivedRequestContacts();
+                var receivedRequests = await GetReceivedRequestContacts();
                 foreach (var contact in receivedRequests)
                 {
                     ReceivedRequestContacts.Add(contact);
                 }
 
                 ReceivedRequestsStatusMessage = ReceivedRequestContacts.Count > 0 
-                    ? $"You have {ReceivedRequestContacts.Count} connection requests" 
-                    : "No connection requests";
+                    ? $"You have {ReceivedRequestContacts.Count} reaction requests" 
+                    : "No reaction requests";
                 
                 UpdateEmptyState();
             }
@@ -255,51 +213,33 @@ namespace GalaxyMatchGUI.ViewModels
             }
         }
 
-        private ObservableCollection<Contact> GetMockReceivedRequestContacts()
+        private async Task<ObservableCollection<Reaction>> GetReceivedRequestContacts()
         {
-            return new ObservableCollection<Contact>
+            var httpClient = HttpService.Instance;
+            var reactionsList = (await httpClient.GetJsonAsync<List<Reaction>>("/api/reactions/received-requests", true)) ?? new List<Reaction>();
+            foreach (var contact in reactionsList)
             {
-                new Contact(this)
-                {
-                    UserId = Guid.NewGuid(),
-                    DisplayName = "Galaxy Wanderer",
-                    AvatarUrl = "https://i.pravatar.cc/150?img=6"
-                },
-                new Contact(this)
-                {
-                    UserId = Guid.NewGuid(),
-                    DisplayName = "Cosmic Ray",
-                    AvatarUrl = "https://i.pravatar.cc/150?img=7"
-                },
-                new Contact(this)
-                {
-                    UserId = Guid.NewGuid(),
-                    DisplayName = "Nebula Navigator",
-                    AvatarUrl = "https://i.pravatar.cc/150?img=8"
-                }
-            };
+                contact.SetContactsViewModel(this);
+            }
+            return new ObservableCollection<Reaction>(reactionsList);
         }
         
-        public async Task AcceptRequestAsync(Contact contact)
+        public async Task AcceptRequestAsync(Reaction reaction)
         {
             try
             {
-                if (contact == null) return;
+                if (reaction == null) return;
                 
                 IsLoadingReceivedRequests = true;
-                ReceivedRequestsStatusMessage = $"Accepting request from {contact.DisplayName}...";
+                ReceivedRequestsStatusMessage = $"Accepting request from {reaction.DisplayName}...";
                 
-                // Simulate network delay
-                await Task.Delay(800);
+                ReceivedRequestContacts.Remove(reaction);
+                MessageContacts.Add(reaction);
                 
-                ReceivedRequestContacts.Remove(contact);
-                MessageContacts.Add(contact);
+                ReceivedRequestsStatusMessage = $"Connected with {reaction.DisplayName}!";
                 
-                ReceivedRequestsStatusMessage = $"Connected with {contact.DisplayName}!";
-                
-                // Update empty state and messaging status
                 UpdateEmptyState();
-                MessagesStatusMessage = $"Found {MessageContacts.Count} message contacts";
+                MessagesStatusMessage = $"Found {MessageContacts.Count} message reactions";
             }
             catch (Exception ex)
             {
@@ -319,7 +259,6 @@ namespace GalaxyMatchGUI.ViewModels
 
         #endregion
 
-        // Helper to update empty state visibility
         private void UpdateEmptyState()
         {
             bool allEmpty = MessageContacts.Count == 0 && 

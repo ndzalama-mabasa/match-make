@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using GalaxyMatchGUI.Models;
 
 namespace GalaxyMatchGUI.Services
 {
@@ -15,23 +17,31 @@ namespace GalaxyMatchGUI.Services
 
         private HttpService()
         {
-            var handler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-            };
-            _httpClient = new HttpClient(handler)
+            _httpClient = new HttpClient()
             {
                 BaseAddress = new Uri(App.Settings.BackendUrl)
             };
         }
 
-        public async Task<string> GetStringAsync(string url)
+        private void ApplyAuthorizationHeader(bool useJwt)
         {
+            _httpClient.DefaultRequestHeaders.Authorization = 
+                useJwt && !string.IsNullOrEmpty(JwtStorage.Instance.authDetails.JwtToken)
+                    ? new AuthenticationHeaderValue("Bearer", JwtStorage.Instance.authDetails.JwtToken)
+                    : null;
+        }
+
+        public async Task<string> GetStringAsync(string url, bool useJwt = false)
+        {
+            ApplyAuthorizationHeader(useJwt);
             return await _httpClient.GetStringAsync(url);
         }
 
-        public async Task<T?> GetJsonAsync<T>(string url)
+        public async Task<T?> GetJsonAsync<T>(string url, bool useJwt = false)
         {
+            ApplyAuthorizationHeader(useJwt);
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", JwtStorage.Instance.authDetails.JwtToken);
             var response = await _httpClient.GetAsync(url);
             var rawContent = await response.Content.ReadAsStringAsync();
 
@@ -46,8 +56,9 @@ namespace GalaxyMatchGUI.Services
             });
         }
 
-        public async Task<T?> PostJsonAsync<T>(string url, object data)
+        public async Task<T?> PostJsonAsync<T>(string url, object data, bool useJwt = false)
         {
+            ApplyAuthorizationHeader(useJwt);
             var json = JsonSerializer.Serialize(data);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync(url, content);
@@ -64,8 +75,9 @@ namespace GalaxyMatchGUI.Services
             });
         }
 
-        public async Task DeleteAsync(string url)
+        public async Task DeleteAsync(string url, bool useJwt = false)
         {
+            ApplyAuthorizationHeader(useJwt);
             var response = await _httpClient.DeleteAsync(url);
             if (!response.IsSuccessStatusCode)
             {

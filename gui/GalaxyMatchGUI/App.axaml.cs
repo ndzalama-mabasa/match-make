@@ -52,7 +52,7 @@ public partial class App : Application
             // Register views with navigation service
             navigationService.RegisterView<LoginViewModel, LoginView>();
             navigationService.RegisterView<MatchingViewModel, MatchingView>();
-            navigationService.RegisterView<ContactsViewModel, ContactsView>();
+            navigationService.RegisterView<ReactionsViewModel, ReactionsView>();
             navigationService.RegisterView<MessageRoomViewModel, MessageRoomView>();
             navigationService.RegisterView<ProfileViewModel, ProfileView>();
             
@@ -77,7 +77,7 @@ public partial class App : Application
         services.AddTransient<LoginViewModel>();
         services.AddTransient<MainWindowViewModel>();
         services.AddTransient<MatchingViewModel>();
-        services.AddTransient<ContactsViewModel>();
+        services.AddTransient<ReactionsViewModel>();
         services.AddTransient<MessageRoomViewModel>();
         services.AddTransient<ProfileViewModel>();
         
