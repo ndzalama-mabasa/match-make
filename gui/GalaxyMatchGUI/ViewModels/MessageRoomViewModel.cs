@@ -29,6 +29,8 @@ public partial class MessageRoomViewModel : ViewModelBase
 
     [ObservableProperty]
     private string selectedOption;
+    [ObservableProperty]
+    private string _recipientName;
 
     public ObservableCollection<string> Options { get; } = new()
     {
@@ -50,6 +52,7 @@ public partial class MessageRoomViewModel : ViewModelBase
         if (recipient != null)
         {
             _recipientId = recipient.UserId.ToString();
+            RecipientName = recipient.DisplayName; // Set the recipient name
         }
         
         LoadInitialMessagesCommand.Execute(null);
@@ -67,6 +70,12 @@ public partial class MessageRoomViewModel : ViewModelBase
         {
             IsLoading = false;
         }
+    }
+
+    [RelayCommand]
+    private void GoBack()
+    {
+        NavigationService?.NavigateTo<InteractionsViewModel>();
     }
 
     [RelayCommand]
@@ -132,7 +141,9 @@ public partial class MessageRoomViewModel : ViewModelBase
             
             // Fetch previous messages
             var response = await _httpClient.GetAsync(
-                $"http://localhost:5284/api/messages?senderId={_currentUserId}&recipientId={_recipientId}");
+                $"http://localhost:5284/api/messages/between?senderId={_currentUserId}&receiverId={_recipientId}");
+            
+            CurrentMessage = $"{response.StatusCode}";
                 
             if (response.IsSuccessStatusCode)
             {
