@@ -6,8 +6,8 @@
              mc:Ignorable="d"
              d:DesignWidth="400"
              d:DesignHeight="600"
-             x:Class="GalaxyMatchGUI.Views.ReactionsView"
-             x:DataType="vm:ReactionsViewModel">
+             x:Class="GalaxyMatchGUI.Views.InteractionsView"
+             x:DataType="vm:InteractionsViewModel">
 
     <Grid RowDefinitions="Auto,*" Background="#0D0221" Margin="20">
         

@@ -13,26 +13,26 @@ using GalaxyMatchGUI.Services;
 
 namespace GalaxyMatchGUI.ViewModels
 {
-    public partial class ReactionsViewModel : ViewModelBase
+    public partial class InteractionsViewModel : ViewModelBase
     {
-        [ObservableProperty] private ObservableCollection<Reaction> _messageContacts = new();
+        [ObservableProperty] private ObservableCollection<Contact> _messageContacts = new();
         [ObservableProperty] private bool _isLoadingMessages;
         [ObservableProperty] private string _messagesStatusMessage = string.Empty;
         
-        [ObservableProperty] private ObservableCollection<Reaction> _sentRequestContacts = new();
+        [ObservableProperty] private ObservableCollection<Contact> _sentRequestContacts = new();
         [ObservableProperty] private bool _isLoadingSentRequests;
         [ObservableProperty] private string _sentRequestsStatusMessage = string.Empty;
         
-        [ObservableProperty] private ObservableCollection<Reaction> _receivedRequestContacts = new();
+        [ObservableProperty] private ObservableCollection<Contact> _receivedRequestContacts = new();
         [ObservableProperty] private bool _isLoadingReceivedRequests;
         [ObservableProperty] private string _receivedRequestsStatusMessage = string.Empty;
         
         [ObservableProperty] private bool _showEmptyState;
         [ObservableProperty] private string _emptyStateMessage = "No connections found. Start exploring the cosmos!";
 
-        [ObservableProperty] private Reaction _selectedReaction;
+        [ObservableProperty] private Contact _selectedContact;
         
-        public ReactionsViewModel()
+        public InteractionsViewModel()
         {
             Task.Run(async () => {
                 await LoadMessagesAsync();
@@ -80,16 +80,16 @@ namespace GalaxyMatchGUI.ViewModels
             }
         }
 
-        private async Task<ObservableCollection<Reaction>> GetMessageContactsAsync()
+        private async Task<ObservableCollection<Contact>> GetMessageContactsAsync()
         {
             var httpClient = HttpService.Instance;
-            var reactionsList = (await httpClient.GetJsonAsync<List<Reaction>>("/api/reactions", true)) ?? new List<Reaction>();
+            var reactionsList = (await httpClient.GetJsonAsync<List<Contact>>("/api/interactions", true)) ?? new List<Contact>();
             foreach (var contact in reactionsList)
             {
                 contact.SetContactsViewModel(this);
             }
 
-            return new ObservableCollection<Reaction>(reactionsList);
+            return new ObservableCollection<Contact>(reactionsList);
         }
 
 
@@ -136,18 +136,18 @@ namespace GalaxyMatchGUI.ViewModels
             }
         }
 
-        private async Task<ObservableCollection<Reaction>> GetSentRequestContacts()
+        private async Task<ObservableCollection<Contact>> GetSentRequestContacts()
         {
             var httpClient = HttpService.Instance;
-            var reactionsList = (await httpClient.GetJsonAsync<List<Reaction>>("/api/reactions/sent-requests", true)) ?? new List<Reaction>();
+            var reactionsList = (await httpClient.GetJsonAsync<List<Contact>>("/api/interactions/sent-requests", true)) ?? new List<Contact>();
             foreach (var reaction in reactionsList)
             {
                 reaction.SetContactsViewModel(this);
             }
-            return new ObservableCollection<Reaction>(reactionsList);
+            return new ObservableCollection<Contact>(reactionsList);
         }
         
-        public async Task CancelRequestAsync(Reaction reaction)
+        public async Task CancelRequestAsync(Contact reaction)
         {
             try
             {
@@ -213,18 +213,18 @@ namespace GalaxyMatchGUI.ViewModels
             }
         }
 
-        private async Task<ObservableCollection<Reaction>> GetReceivedRequestContacts()
+        private async Task<ObservableCollection<Contact>> GetReceivedRequestContacts()
         {
             var httpClient = HttpService.Instance;
-            var reactionsList = (await httpClient.GetJsonAsync<List<Reaction>>("/api/reactions/received-requests", true)) ?? new List<Reaction>();
+            var reactionsList = (await httpClient.GetJsonAsync<List<Contact>>("/api/interactions/received-requests", true)) ?? new List<Contact>();
             foreach (var contact in reactionsList)
             {
                 contact.SetContactsViewModel(this);
             }
-            return new ObservableCollection<Reaction>(reactionsList);
+            return new ObservableCollection<Contact>(reactionsList);
         }
         
-        public async Task AcceptRequestAsync(Reaction reaction)
+        public async Task AcceptRequestAsync(Contact reaction)
         {
             try
             {
