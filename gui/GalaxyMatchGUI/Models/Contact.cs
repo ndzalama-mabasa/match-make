@@ -28,6 +28,11 @@ public partial class Contact
         await _interactionsViewModel?.AcceptRequestAsync(this);
     }
     
+    public async Task RejectRequest()
+    {
+        await _interactionsViewModel?.RejectRequestAsync(this);
+    }
+    
     public async Task CancelRequest()
     {
         await _interactionsViewModel?.CancelRequestAsync(this);
