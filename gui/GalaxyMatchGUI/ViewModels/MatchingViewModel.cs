@@ -125,9 +125,12 @@ public class MatchingViewModel : ViewModelBase
             // Get all profiles from the API
             _allProfiles = await _profileService.GetAllProfilesAsync();
             
+            
             if (_allProfiles != null && _allProfiles.Any())
             {
-                // Start showing the first profile
+                var currentUserId = JwtStorage.Instance.authDetails?.UserId;
+                _allProfiles = _allProfiles.Where(profile => profile.UserId != currentUserId).ToList();
+
                 await ShowNextProfile();
             }
             else
