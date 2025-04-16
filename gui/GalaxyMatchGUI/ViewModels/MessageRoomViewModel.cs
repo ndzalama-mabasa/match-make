@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System;
 using System.Linq;
 using GalaxyMatchGUI.Models;
+using GalaxyMatchGUI.lib;
 
 namespace GalaxyMatchGUI.ViewModels;
 
@@ -98,7 +99,7 @@ public partial class MessageRoomViewModel : ViewModelBase
             
             // Send to API
             var response = await _httpClient.PostAsJsonAsync(
-                App.Settings.BackendUrl+"/api/messages", 
+                AppSettings.BackendUrl+"/api/messages", 
                 messageToSend);
 
                 
@@ -140,7 +141,7 @@ public partial class MessageRoomViewModel : ViewModelBase
             
             // Fetch previous messages
             var response = await _httpClient.GetAsync(
-                $"{App.Settings.BackendUrl}/api/messages/between?senderId={_currentUserId}&receiverId={_recipientId}");
+                $"{AppSettings.BackendUrl}/api/messages/between?senderId={_currentUserId}&receiverId={_recipientId}");
             
             CurrentMessage = $"{response.StatusCode}";
                 
