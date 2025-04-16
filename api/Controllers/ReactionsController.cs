@@ -58,6 +58,10 @@ public class ReactionsController : ControllerBase
         if (target == null)
         {
             return NotFound($"Target user with ID {request.TargetId} not found");
+        } 
+        else if (target.Id == reactorId)
+        {
+            return BadRequest("You cannot react to your own profile.");
         }
 
         var reaction = new ReactionDto
