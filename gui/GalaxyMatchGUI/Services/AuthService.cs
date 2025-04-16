@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using GalaxyMatchGUI.Models;
 using System.Web;
+using GalaxyMatchGUI.lib;
 
 namespace GalaxyMatchGUI.Services;
 
@@ -18,13 +19,13 @@ public class AuthService : IDisposable
         try
         {
             var authUrl = $"https://accounts.google.com/o/oauth2/v2/auth?" +
-                          $"client_id={App.Settings.GoogleClientId}&" +
-                          $"redirect_uri={App.Settings.CallbackUrl}&" +
+                          $"client_id={AppSettings.GoogleClientId}&" +
+                          $"redirect_uri={AppSettings.CallbackUrl}&" +
                           $"response_type=code&" +
                           $"scope=openid%20email%20profile&";
             
             _listener = new HttpListener();
-            _listener.Prefixes.Add(App.Settings.CallbackUrl+'/');
+            _listener.Prefixes.Add(AppSettings.CallbackUrl+'/');
             _listener.Start();
 
             Process.Start(new ProcessStartInfo

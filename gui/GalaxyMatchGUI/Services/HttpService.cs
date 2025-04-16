@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using GalaxyMatchGUI.Models;
+using GalaxyMatchGUI.lib;
 
 namespace GalaxyMatchGUI.Services
 {
@@ -22,7 +23,7 @@ namespace GalaxyMatchGUI.Services
         {
             _httpClient = new HttpClient()
             {
-                BaseAddress = new Uri(App.Settings.BackendUrl)
+                BaseAddress = new Uri(AppSettings.BackendUrl)
             };
         }
 
