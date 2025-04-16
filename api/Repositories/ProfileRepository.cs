@@ -39,10 +39,10 @@ public class ProfileRepository : IProfileRepository
         var sql = GetUpsertProfileSql(true);
 
         using var connection = _context.CreateConnection();
-        using var transaction = connection.BeginTransaction();
+        // using var transaction = connection.BeginTransaction();
 
-        try
-        {
+        // try
+        // {
             var updatedProfileId = await connection.ExecuteScalarAsync<int>(sql, new
             {
                 UserId = id,
@@ -54,10 +54,10 @@ public class ProfileRepository : IProfileRepository
                 GenderId = profile.GenderId,
                 HeightInGalacticInches = profile.HeightInGalacticInches,
                 GalacticDateOfBirth = profile.GalacticDateOfBirth
-            }, transaction);
+            });
 
             var deleteInterestsSql = "DELETE FROM user_interests WHERE user_id = @UserId;";
-            await connection.ExecuteAsync(deleteInterestsSql, new { UserId = id }, transaction);
+            await connection.ExecuteAsync(deleteInterestsSql, new { UserId = id });
 
             if (profile.UserInterestIds != null && profile.UserInterestIds.Any())
             {
@@ -71,18 +71,18 @@ public class ProfileRepository : IProfileRepository
                     {
                         UserId = id,
                         InterestId = interestId
-                    }, transaction);
+                    });
                 }
             }
 
-            transaction.Commit();
+            // transaction.Commit();
             return await GetProfileById(id);
-        }
-        catch
-        {
-            transaction.Rollback();
-            throw;
-        }
+        // }
+        // catch
+        // {
+        //     transaction.Rollback();
+        //     throw;
+        // }
     }
 
     public async Task<ProfileDto> CreateProfile(Guid id, CreateProfileDto profile)
@@ -90,10 +90,10 @@ public class ProfileRepository : IProfileRepository
         var sql = GetUpsertProfileSql(false);
 
         using var connection = _context.CreateConnection();
-        using var transaction = connection.BeginTransaction();
+        // using var transaction = connection.BeginTransaction();
 
-        try
-        {
+        // try
+        // {
             var profileId = await connection.ExecuteScalarAsync<int>(sql, new
             {
                 UserId = id,
@@ -105,7 +105,7 @@ public class ProfileRepository : IProfileRepository
                 GenderId = profile.GenderId,
                 HeightInGalacticInches = profile.HeightInGalacticInches,
                 GalacticDateOfBirth = profile.GalacticDateOfBirth
-            }, transaction);
+            });
 
             if (profile.UserInterestIds != null && profile.UserInterestIds.Any())
             {
@@ -119,18 +119,18 @@ public class ProfileRepository : IProfileRepository
                     {
                         UserId = id,
                         InterestId = interestId
-                    }, transaction);
+                    });
                 }
             }
 
-            transaction.Commit();
+            // transaction.Commit();
             return await GetProfileById(id);
-        }
-        catch
-        {
-            transaction.Rollback();
-            throw;
-        }
+        // }
+        // catch
+        // {
+        //     transaction.Rollback();
+        //     throw;
+        // }
     }
 
     public async Task<IEnumerable<ProfileDto>> GetPendingMatchesByUserId(Guid id)
@@ -311,5 +311,9 @@ public class ProfileRepository : IProfileRepository
             (@UserId, @DisplayName, @Bio, @AvatarUrl, @SpeciesId, @PlanetId, @GenderId, @HeightInGalacticInches, @GalacticDateOfBirth)
             RETURNING id;";
     }
-    
+
+    public Task<IEnumerable<LikersDto>> GetUserLikersProfiles(Guid id)
+    {
+        throw new NotImplementedException();
+    }
 }
