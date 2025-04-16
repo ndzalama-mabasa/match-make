@@ -337,7 +337,7 @@ public class MatchingViewModel : ViewModelBase
     private void ViewMessages()
     {
         // Navigate to messages view
-        NavigationService?.NavigateTo<ContactsViewModel>();
+        NavigationService?.NavigateTo<InteractionsViewModel>();
     }
     
     // Fallback methods for demo profile if API fails
