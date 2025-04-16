@@ -6,13 +6,14 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using GalaxyMatchGUI.Models;
+using GalaxyMatchGUI.lib;
 
 namespace GalaxyMatchGUI.Services
 {
     public class ReactionService
     {
         private readonly HttpClient _httpClient;
-        private string ApiBaseUrl = App.Settings.BackendUrl;
+        private string ApiBaseUrl = AppSettings.BackendUrl;
 
         public ReactionService()
         {

@@ -21,13 +21,14 @@ using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using GalaxyMatchGUI.lib;
 
 namespace GalaxyMatchGUI.ViewModels
 {
     public partial class ProfileViewModel : ViewModelBase
     {
         private readonly INavigationService? _navigationService;
-        private string ApiBaseUrl = App.Settings.BackendUrl;
+        private string ApiBaseUrl = AppSettings.BackendUrl;
         private readonly HttpClient _httpClient = new HttpClient();
 
         [ObservableProperty]
