@@ -1,6 +1,4 @@
-﻿// File: Services/AuthService.cs
-
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
@@ -19,21 +17,15 @@ public class AuthService : IDisposable
     {
         try
         {
+            var authUrl = $"https://accounts.google.com/o/oauth2/v2/auth?" +
+                          $"client_id={App.Settings.GoogleClientId}&" +
+                          $"redirect_uri={App.Settings.CallbackUrl}&" +
+                          $"response_type=code&" +
+                          $"scope=openid%20email%20profile&";
+            
             _listener = new HttpListener();
-            _listener.Prefixes.Add(App.Settings.CallbackUrl);
+            _listener.Prefixes.Add(App.Settings.CallbackUrl+'/');
             _listener.Start();
-
-            var httpService = HttpService.Instance;
-
-            string authUrl;
-            try
-            {
-                authUrl = await httpService.GetStringAsync("/api/auth/google-login");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed to get login URL: {ex.Message}", ex);
-            }
 
             Process.Start(new ProcessStartInfo
             {
@@ -53,20 +45,13 @@ public class AuthService : IDisposable
             var context = await getContextTask;
             var authCode = context.Request.QueryString["code"];
 
-            var response = context.Response;
-            var responseString = "<html><body>Login successful! You can close this window.</body></html>";
-            var buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
-            response.ContentLength64 = buffer.Length;
-            await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
-            response.Close();
-
             if (!string.IsNullOrWhiteSpace(authCode))
             {
                 try
                 {
+                    var httpService = HttpService.Instance;
                     var encodedCode = HttpUtility.UrlEncode(authCode);
                     var jwtResponseUrl = $"/api/auth/google-callback?code={encodedCode}";
-
                     var rawContent = await httpService.GetStringAsync(jwtResponseUrl);
 
                     var authResponse = JsonSerializer.Deserialize<AuthResponse>(rawContent, new JsonSerializerOptions
@@ -80,6 +65,13 @@ public class AuthService : IDisposable
                     }
 
                     JwtStorage.Instance.authDetails = authResponse;
+                    var response = context.Response;
+                    var responseString = "<html><body>Login successful! You can close this window.</body></html>";
+                    var buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+                    response.ContentLength64 = buffer.Length;
+                    await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+                    response.Close();
+                    
                     return authResponse;
                 }
                 catch (Exception ex)

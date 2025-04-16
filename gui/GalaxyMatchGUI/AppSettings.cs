@@ -7,6 +7,7 @@ public class AppSettings
 {
     public string BackendUrl { get; set; }
     public string CallbackUrl { get; set; }
+    public string GoogleClientId { get; set; }
 
     public static AppSettings Load()
     {
