@@ -98,7 +98,7 @@ public partial class MessageRoomViewModel : ViewModelBase
             
             // Send to API
             var response = await _httpClient.PostAsJsonAsync(
-                "http://localhost:5284/api/messages", 
+                App.Settings.BackendUrl+"/api/messages", 
                 messageToSend);
 
                 
@@ -140,7 +140,7 @@ public partial class MessageRoomViewModel : ViewModelBase
             
             // Fetch previous messages
             var response = await _httpClient.GetAsync(
-                $"http://localhost:5284/api/messages/between?senderId={_currentUserId}&receiverId={_recipientId}");
+                $"{App.Settings.BackendUrl}/api/messages/between?senderId={_currentUserId}&receiverId={_recipientId}");
             
             CurrentMessage = $"{response.StatusCode}";
                 
