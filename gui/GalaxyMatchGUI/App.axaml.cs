@@ -17,7 +17,7 @@ namespace GalaxyMatchGUI;
 public partial class App : Application
 {
     public static IServiceProvider? ServiceProvider { get; private set; }
-    public static AppSettings Settings { get; private set; }
+    
 
     public override void Initialize()
     {
@@ -67,8 +67,6 @@ public partial class App : Application
 
             // Navigate to login view
             navigationService.NavigateTo<LoginViewModel>();
-            Settings = AppSettings.Load();
-
         }
 
         base.OnFrameworkInitializationCompleted();
