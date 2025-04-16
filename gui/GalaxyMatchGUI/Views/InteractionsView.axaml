@@ -343,7 +343,7 @@
                                                 BorderBrush="#5D12D2"
                                                 Cursor="Hand"
                                                 BorderThickness="1">
-                                            <Grid ColumnDefinitions="Auto,*, Auto, Auto">
+                                            <Grid ColumnDefinitions="Auto,*,Auto">
                                                 <!-- Avatar -->
                                                 <Border Grid.Column="0" Width="50" Height="50" CornerRadius="25" Background="#2A0F5B"
                                                         BorderBrush="#5D12D2" BorderThickness="2" Margin="0,0,15,0">
@@ -362,42 +362,47 @@
                                                            FontWeight="SemiBold" 
                                                            Foreground="White"
                                                            VerticalAlignment="Center"/>
-
-                                                <!-- Accept Button -->
-                                                <Button Grid.Column="2"
-                                                        Command="{Binding AcceptRequest}"
-                                                        CommandParameter="{Binding}"
-                                                        Content="Reject"
-                                                        Foreground="White"
-                                                        Background="#FF4757"
-                                                        Padding="12,6"
-                                                        CornerRadius="20"
-                                                        VerticalAlignment="Center">
-                                                    <Button.Styles>
-                                                        <Style Selector="Button:pointerover">
-                                                            <Setter Property="Background" Value="#6ABF6E"/>
-                                                            <Setter Property="Cursor" Value="Hand"/>
-                                                        </Style>
-                                                    </Button.Styles>
-                                                </Button>
                                                 
-                                                <Button Grid.Column="3"
-                                                        Command="{Binding AcceptRequest}"
-                                                        CommandParameter="{Binding}"
-                                                        Content="Accept"
-                                                        Foreground="White"
-                                                        Background="#4CAF50"
-                                                        Padding="12,6"
-                                                        Margin="10, 0, 0, 0"
-                                                        CornerRadius="20"
-                                                        VerticalAlignment="Center">
-                                                    <Button.Styles>
-                                                        <Style Selector="Button:pointerover">
-                                                            <Setter Property="Background" Value="#6ABF6E"/>
-                                                            <Setter Property="Cursor" Value="Hand"/>
-                                                        </Style>
-                                                    </Button.Styles>
-                                                </Button>
+                                                <StackPanel Grid.Column="2"
+                                                            Orientation="Horizontal"
+                                                            HorizontalAlignment="Right"
+                                                            VerticalAlignment="Center"
+                                                            Spacing="10">
+    
+                                                    <!-- Accept Button -->
+                                                    <Button Command="{Binding AcceptRequest}"
+                                                            CommandParameter="{Binding}"
+                                                            Content="Accept"
+                                                            Foreground="White"
+                                                            Background="#4CAF50"
+                                                            Padding="12,6"
+                                                            CornerRadius="20">
+                                                        <Button.Styles>
+                                                            <Style Selector="Button:pointerover">
+                                                                <Setter Property="Background" Value="#6ABF6E"/>
+                                                                <Setter Property="Cursor" Value="Hand"/>
+                                                            </Style>
+                                                        </Button.Styles>
+                                                    </Button>
+
+                                                    <!-- Reject Button -->
+                                                    <Button Command="{Binding RejectRequest}"
+                                                            CommandParameter="{Binding}"
+                                                            Content="Reject"
+                                                            Foreground="White"
+                                                            Background="#F44336"
+                                                            Padding="12,6"
+                                                            CornerRadius="20">
+                                                        <Button.Styles>
+                                                            <Style Selector="Button:pointerover">
+                                                                <Setter Property="Background" Value="#E57373"/>
+                                                                <Setter Property="Cursor" Value="Hand"/>
+                                                            </Style>
+                                                        </Button.Styles>
+                                                    </Button>
+
+                                                </StackPanel>
+
                                             </Grid>
                                         </Border>
                                     </DataTemplate>
