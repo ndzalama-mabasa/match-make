@@ -6,13 +6,14 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using GalaxyMatchGUI.Models;
+using GalaxyMatchGUI.lib;
 
 namespace GalaxyMatchGUI.Services
 {
     public class ProfileService
     {
         private readonly HttpClient _httpClient;
-        private const string ApiBaseUrl = "http://localhost:5284";
+        private string ApiBaseUrl = AppSettings.BackendUrl;
 
         public ProfileService()
         {

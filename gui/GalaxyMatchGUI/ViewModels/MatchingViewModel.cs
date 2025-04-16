@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace GalaxyMatchGUI.ViewModels;
 
-public class MatchingViewModel : ViewModelBase
+public partial class MatchingViewModel : ViewModelBase
 {
     private Profile? _currentProfile;
     public Profile? CurrentProfile
@@ -87,6 +87,8 @@ public class MatchingViewModel : ViewModelBase
 
     private readonly ReactionService _reactionService;
     private readonly ProfileService _profileService;
+    private readonly InteractionsViewModel _interactionsViewModel;
+    
     private int _currentProfileIndex = 0;
 
     public IRelayCommand SwipeLeftCommand { get; }
@@ -98,6 +100,7 @@ public class MatchingViewModel : ViewModelBase
     {
         _reactionService = new ReactionService();
         _profileService = new ProfileService();
+        _interactionsViewModel = new InteractionsViewModel();
         SwipeLeftCommand = new RelayCommand(SwipeLeft);
         SwipeRightCommand = new RelayCommand(SwipeRight);
         ViewProfileCommand = new RelayCommand(ViewProfile);
@@ -125,9 +128,15 @@ public class MatchingViewModel : ViewModelBase
             // Get all profiles from the API
             _allProfiles = await _profileService.GetAllProfilesAsync();
             
+            
             if (_allProfiles != null && _allProfiles.Any())
             {
-                // Start showing the first profile
+                var currentUserId = JwtStorage.Instance.authDetails?.UserId;
+                var contactsConnected = await _interactionsViewModel.GetMessageContactsAsync();
+                var matchedProfiles = contactsConnected.Select(message => message.UserId).ToList();
+                
+                _allProfiles = _allProfiles.Where(profile => profile.UserId != currentUserId && !matchedProfiles.Contains(profile.UserId)).ToList();
+
                 await ShowNextProfile();
             }
             else
