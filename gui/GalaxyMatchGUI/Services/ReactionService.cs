@@ -12,7 +12,7 @@ namespace GalaxyMatchGUI.Services
     public class ReactionService
     {
         private readonly HttpClient _httpClient;
-        private const string ApiBaseUrl = "http://localhost:5284";
+        private string ApiBaseUrl = App.Settings.BackendUrl;
 
         public ReactionService()
         {

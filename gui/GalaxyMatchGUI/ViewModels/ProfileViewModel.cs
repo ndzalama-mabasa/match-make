@@ -18,7 +18,7 @@ namespace GalaxyMatchGUI.ViewModels
     public partial class ProfileViewModel : ViewModelBase
     {
         private readonly INavigationService? _navigationService;
-        private const string ApiBaseUrl = "http://localhost:5284";
+        private string ApiBaseUrl = App.Settings.BackendUrl;
         private readonly HttpClient _httpClient = new HttpClient();
 
         [ObservableProperty]
