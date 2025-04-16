@@ -82,7 +82,7 @@ namespace GalaxyMatchGUI.ViewModels
             }
         }
 
-        private async Task<ObservableCollection<Contact>> GetMessageContactsAsync()
+        public async Task<ObservableCollection<Contact>> GetMessageContactsAsync()
         {
             var httpClient = HttpService.Instance;
             var reactionsList = (await httpClient.GetJsonAsync<List<Contact>>("/api/interactions", true)) ?? new List<Contact>();
